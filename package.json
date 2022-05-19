@@ -3,7 +3,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "compile-contract": "./reach compile ./contract/index.rsh",
+    "run-contract": "./reach run ./contract"
   },
   "dependencies": {
     "firebase": "^9.8.1",
