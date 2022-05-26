@@ -37,7 +37,7 @@ const Card = ({ title, description, shift = false }: CardProps) => {
         'mx-6 mb-[10%] flex h-fit w-[90%] flex-col items-center justify-center rounded-b-2xl shadow-[0px_10px_11px] shadow-transparentBrown md:w-[50%] md:self-center '
       }
     >
-      <h2 className="relative my-4 mx-8 font-mont text-smallH2 text-brown md:text-bigH2">
+      <h2 className="relative my-4 mx-8 text-smallH2 font-bold text-brown md:text-bigH2">
         <Highlight>{title}</Highlight>
       </h2>
 
