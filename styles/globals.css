@@ -1,3 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;700&family=Press+Start+2P&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Varela&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@layer base {
+    html {
+        scroll-behavior: smooth;
+        overflow-x: hidden;
+        font-family: 'Varela', 'Montserrat', sans-serif;
+    }
+    body {
+        background-color: #3b2d60;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+    }
+    /* width */
+     ::-webkit-scrollbar {
+        width: 5px;
+    }
+    /* Track */
+     ::-webkit-scrollbar-track {
+        background: none;
+    }
+    /* Handle */
+     ::-webkit-scrollbar-thumb {
+        background: #dfb59ca2;
+        border-radius: 10px;
+    }
+    /* Handle on hover */
+     ::-webkit-scrollbar-thumb:hover {
+        background: #dfb59c;
+    }
+}
