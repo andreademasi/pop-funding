@@ -65,22 +65,23 @@ module.exports = {
                 brown: '#dfb59c',
                 blue: '#dde6ff',
                 transparentBrown: '#dfb59c80',
+                transparentBlue: '#dde6ff80',
             },
         },
         plugins: [
             /*plugin(function({ addBase, config }) {
-                      addBase({
-                          h1: {
-                              fontFamily: config('theme.fontFamily.mont'),
-                              fontWeight: '100',
-                              //fontWeight: 'bold',
-                          },
-                          h2: {
-                              fontWeight: '400',
-                              //fontWeight: 'bold',
-                          },
-                      })
-                  }),*/
+                            addBase({
+                                h1: {
+                                    fontFamily: config('theme.fontFamily.mont'),
+                                    fontWeight: '100',
+                                    //fontWeight: 'bold',
+                                },
+                                h2: {
+                                    fontWeight: '400',
+                                    //fontWeight: 'bold',
+                                },
+                            })
+                        }),*/
         ],
     },
 }
