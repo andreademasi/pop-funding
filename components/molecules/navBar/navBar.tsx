@@ -14,7 +14,7 @@ const NavBar = ({ items }: NavBarProps) => {
         <a
           key={index}
           href={item.link}
-          className="after:content-[' '] flex flex-col text-smallA after:h-px after:w-0 after:self-center after:bg-brown after:transition-all after:duration-300 after:hover:w-full md:text-bigA"
+          className="after:content-[' '] z-10 flex flex-col text-smallA after:h-px after:w-0 after:self-center after:bg-brown after:transition-all after:duration-300 after:hover:w-full md:text-bigA"
         >
           {item.name}
         </a>

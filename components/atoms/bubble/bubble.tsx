@@ -53,7 +53,7 @@ const Bubble = ({ dimensions = 200, right = 10 }: BubbleProps) => {
           opacity: clicked ? 0 : 1,
           zIndex: clicked ? -1 : 0,
         }}
-        className={` align-center absolute flex animate-[float_ease-in-out_infinite] justify-center rounded-full bg-radial shadow-radial transition-transform duration-100`}
+        className={` align-center absolute top-0 flex animate-[float_ease-in-out_infinite] justify-center rounded-full bg-radial shadow-radial transition-transform duration-100`}
       >
         <Image
           src={chain}
