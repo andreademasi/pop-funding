@@ -60,6 +60,7 @@ const Bubble = ({ dimensions = 200, right = 10 }: BubbleProps) => {
           width={dimensions * 0.8}
           height={dimensions * 0.8}
           className={'-z-10 opacity-10'}
+          alt="chain"
         />
       </div>
     </div>
