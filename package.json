@@ -8,12 +8,19 @@
     "run-contract": "./reach run ./contract"
   },
   "dependencies": {
+    "algosdk": "^1.16.0",
+    "base64-js": "^1.5.1",
     "firebase": "^9.8.1",
+    "form-data": "^4.0.0",
+    "ieee754": "^1.2.1",
     "next": "latest",
     "next-offline": "^5.0.5",
+    "qs": "^6.10.3",
+    "querystringify": "^2.2.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-intersection-observer": "^9.1.0"
+    "react-intersection-observer": "^9.1.0",
+    "requires-port": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "17.0.4",
