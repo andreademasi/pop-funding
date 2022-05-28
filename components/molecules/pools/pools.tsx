@@ -55,7 +55,7 @@ const Pools = () => {
   }, [])
 
   const inputClass =
-    'rounded-2xl border-2 border-brown p-2 m-2 w-20% bg-transparentBrown'
+    'rounded-2xl shadow-xl border-brown p-2 m-2 w-20% bg-[#0000005e]'
 
   return (
     <div className="mx-4 flex flex-col justify-center align-middle">
