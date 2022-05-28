@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { app, database } from '../../../firebaseConfig'
+import { database } from '../../../firebaseConfig'
 import { collection, addDoc, getDocs } from 'firebase/firestore'
 import Pool from '../../atoms/pool/pool'
 
