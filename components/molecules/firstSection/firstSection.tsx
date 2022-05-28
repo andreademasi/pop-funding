@@ -23,7 +23,7 @@ const FirstSection = () => {
         </div>
         <p></p>
       </div>
-      <div className=" flex w-full animate-[boing_3s_ease-in-out_infinite] flex-row justify-center align-middle">
+      <div className="z-20 flex w-full animate-[boing_3s_ease-in-out_infinite] flex-row justify-center align-middle">
         <ArrowDown href="#second" />
       </div>
     </div>
