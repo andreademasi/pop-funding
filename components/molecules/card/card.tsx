@@ -17,9 +17,6 @@ const Card = ({ title, description, shift = false }: CardProps) => {
   })
 
   const properties = {
-    marginLeft: shift ? 'auto' : '1.5rem',
-    marginRight: shift ? '1.5rem' : 'auto',
-    textAlign: shift ? 'right' : 'left',
     opacity: inView ? 1 : 0,
     transform: inView
       ? 'translateX(0)'
@@ -27,6 +24,7 @@ const Card = ({ title, description, shift = false }: CardProps) => {
       ? 'translateX(-70%)'
       : 'translateX(70%)',
     transition: 'opacity 1s ease-in-out, transform 1s ease-in-out',
+    alignSelf: shift ? 'flex-end' : 'flex-start',
   } as React.CSSProperties
 
   return (
@@ -34,7 +32,7 @@ const Card = ({ title, description, shift = false }: CardProps) => {
       ref={ref}
       style={properties}
       className={
-        'mx-6 mb-[10%] flex h-fit w-[90%] flex-col items-center justify-center rounded-b-2xl shadow-[0px_10px_11px] shadow-transparentBrown md:w-[50%] md:self-center '
+        ' mx-6 mb-[10%]  flex h-fit w-[90%] flex-col items-center justify-center rounded-2xl border-brown bg-gradient-to-t from-transparentBrown to-transparent shadow-lg shadow-[#0000002e] md:w-[50%] md:self-center '
       }
     >
       <h2 className="relative my-4 mx-8 text-smallH2 font-bold text-brown md:text-bigH2">
