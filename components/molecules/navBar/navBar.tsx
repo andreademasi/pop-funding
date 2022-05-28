@@ -9,7 +9,7 @@ interface NavBarProps {
 
 const NavBar = ({ items }: NavBarProps) => {
   return (
-    <nav className="align-center my-5 flex w-full flex-row justify-evenly  ">
+    <nav className="my-5 flex w-full flex-row justify-evenly align-middle  ">
       {items.map((item, index) => (
         <a
           key={index}
