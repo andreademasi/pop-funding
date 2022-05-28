@@ -1,5 +1,4 @@
 import React from 'react'
-import Pools from '../pools/pools'
 import Card from '../card/card'
 
 const cards = [
@@ -34,7 +33,6 @@ const SecondSection = () => {
           shift={index % 2 === 1}
         />
       ))}
-      <Pools />
     </div>
   )
 }

@@ -64,24 +64,30 @@ module.exports = {
                 white: '#fefefe',
                 brown: '#dfb59c',
                 blue: '#dde6ff',
+                darkBlue: '#5F8BCC',
                 transparentBrown: '#dfb59c20',
                 transparentBlue: '#dde6ff60',
+                transparentPurple: '#3b2d6020',
+                transparentPink: '#e78dd220',
+                transparentDarkBlue: '#5F8BCC20',
+                transparentWhite: '#fefefe20',
+                transparentBlack: '#00000020',
             },
         },
         plugins: [
             /*plugin(function({ addBase, config }) {
-                                              addBase({
-                                                  h1: {
-                                                      fontFamily: config('theme.fontFamily.mont'),
-                                                      fontWeight: '100',
-                                                      //fontWeight: 'bold',
-                                                  },
-                                                  h2: {
-                                                      fontWeight: '400',
-                                                      //fontWeight: 'bold',
-                                                  },
-                                              })
-                                          }),*/
+                                                                            addBase({
+                                                                                h1: {
+                                                                                    fontFamily: config('theme.fontFamily.mont'),
+                                                                                    fontWeight: '100',
+                                                                                    //fontWeight: 'bold',
+                                                                                },
+                                                                                h2: {
+                                                                                    fontWeight: '400',
+                                                                                    //fontWeight: 'bold',
+                                                                                },
+                                                                            })
+                                                                        }),*/
         ],
     },
 }

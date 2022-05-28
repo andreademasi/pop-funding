@@ -1,23 +1,30 @@
 import React from 'react'
+import Link from 'next/link'
 
-interface NavBarProps {
-  items: Array<{
-    name: string
-    link: string
-  }>
-}
+const items = [
+  {
+    name: 'Home',
+    link: '/',
+  },
+  {
+    name: 'Fundings',
+    link: '/fundings',
+  },
+  {
+    name: 'Connect',
+    link: '/connect',
+  },
+]
 
-const NavBar = ({ items }: NavBarProps) => {
+const NavBar = () => {
   return (
-    <nav className="my-5 flex w-full flex-row justify-evenly align-middle  ">
+    <nav className="absolute top-0 my-5 flex w-full flex-row justify-evenly align-middle  ">
       {items.map((item, index) => (
-        <a
-          key={index}
-          href={item.link}
-          className="after:content-[' '] z-10 flex flex-col text-smallA after:h-px after:w-0 after:self-center after:bg-brown after:transition-all after:duration-300 after:hover:w-full md:text-bigA"
-        >
-          {item.name}
-        </a>
+        <span className="after:content-[' '] z-10 flex flex-col text-smallA after:h-px after:w-0 after:self-center after:bg-brown after:transition-all after:duration-300 after:hover:w-full md:text-bigA">
+          <Link key={index} href={item.link}>
+            {item.name}
+          </Link>
+        </span>
       ))}
     </nav>
   )
