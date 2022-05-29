@@ -3,11 +3,13 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "compile-contract": "./reach compile ./contract/index.rsh",
-    "run-contract": "./reach run ./contract"
+    "start": "next start"
   },
   "dependencies": {
+    "@json-rpc-tools/utils": "^1.7.6",
+    "@reduxjs/toolkit": "^1.8.2",
+    "@walletconnect/client": "^1.7.8",
+    "algorand-walletconnect-qrcode-modal": "^1.7.4",
     "algosdk": "^1.16.0",
     "base64-js": "^1.5.1",
     "firebase": "^9.8.1",
@@ -20,6 +22,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-intersection-observer": "^9.1.0",
+    "react-redux": "^8.0.2",
     "requires-port": "^1.0.0"
   },
   "devDependencies": {
