@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import { database } from '../../../firebaseConfig'
-import { collection, addDoc, getDocs } from 'firebase/firestore'
+import React, { useCallback, useEffect, useState } from 'react'
+import { addDoc, collection, getDocs } from 'firebase/firestore'
+
 import Pool from '../../atoms/pool/pool'
+import { database } from '../../../firebaseConfig'
 
 interface ItemPool {
   title: string
@@ -34,7 +35,7 @@ const Pools = () => {
     })
   }
 
-  const getPools = () => {
+  const getPools = useCallback(() => {
     getDocs(dbInstance).then((data) => {
       setPoolsArray(
         data.docs.map((item) => {
@@ -48,11 +49,11 @@ const Pools = () => {
         })
       )
     })
-  }
+  }, [dbInstance])
 
   useEffect(() => {
     getPools()
-  }, [])
+  }, [getPools])
 
   const inputClass =
     'rounded-2xl shadow-xl border-brown p-2 m-2 w-20% bg-[#0000005e]'
