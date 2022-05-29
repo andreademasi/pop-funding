@@ -1,63 +1,13 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { addDoc, collection, getDocs } from 'firebase/firestore'
+import React from 'react'
 
 import Pool from '../../atoms/pool/pool'
-import { database } from '../../../firebaseConfig'
+import { ItemPool } from '../fundingsHero/fundingsHero'
 
-interface ItemPool {
-  title: string
-  description: string
-  date: number
-  id: string
+interface PoolsProps {
+  poolsArray: Array<ItemPool>
 }
 
-const Pools = () => {
-  const dbInstance = collection(database, 'active-pools')
-  const [poolsArray, setPoolsArray] = useState<Array<ItemPool>>([])
-  const [title, setTitle] = useState<string>('')
-  const [description, setDescription] = useState<string>('')
-  const [result, setResult] = useState<boolean>(false)
-
-  const addPool = (title: string, description: string) => {
-    addDoc(dbInstance, {
-      title: title,
-      description: description,
-      date: Date.now(),
-    }).then((response) => {
-      if (response) {
-        setResult(true)
-        setTitle('')
-        setDescription('')
-        getPools()
-      } else {
-        setResult(false)
-      }
-    })
-  }
-
-  const getPools = useCallback(() => {
-    getDocs(dbInstance).then((data) => {
-      setPoolsArray(
-        data.docs.map((item) => {
-          const itemData = item.data()
-          return {
-            title: itemData.title,
-            description: itemData.description,
-            date: itemData.date,
-            id: item.id,
-          }
-        })
-      )
-    })
-  }, [dbInstance])
-
-  useEffect(() => {
-    getPools()
-  }, [getPools])
-
-  const inputClass =
-    'rounded-2xl shadow-xl border-brown p-2 m-2 w-20% bg-[#0000005e]'
-
+const Pools = ({ poolsArray }: PoolsProps) => {
   return (
     <div className="mx-4 flex flex-col justify-center align-middle">
       <div className="flex w-full flex-row flex-wrap justify-center align-middle">
@@ -75,28 +25,6 @@ const Pools = () => {
               />
             )
           })}
-      </div>
-      <div className="mx-auto flex w-[80%] flex-col overflow-hidden md:w-1/2">
-        <input
-          type={'text'}
-          className={inputClass}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Title"
-          value={title}
-        />
-        <textarea
-          className={inputClass}
-          rows={5}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Description"
-          value={description}
-        />
-        <button
-          className="mx-auto mt-4 rounded-2xl bg-brown px-4 py-2 text-purple transition-transform hover:scale-105 md:w-1/2"
-          onClick={() => addPool(title, description)}
-        >
-          Add New Pool
-        </button>
       </div>
     </div>
   )
