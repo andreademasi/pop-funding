@@ -126,7 +126,7 @@ const NavBar = () => {
               cx="50"
               cy="50"
               fill="none"
-              stroke="#7c6da1"
+              stroke="#dfb59c"
               strokeWidth="10"
               r="35"
               strokeDasharray="164.93361431346415 56.97787143782138"
