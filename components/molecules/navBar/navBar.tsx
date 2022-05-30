@@ -152,7 +152,7 @@ const NavBar = () => {
             </span>
             <span className="header-account">{ellipseAddress(address)}</span>
             <button
-              className="after:content-[' '] z-10 flex flex-col text-smallA after:h-px after:w-0 after:self-center after:bg-brown after:transition-all after:duration-300 after:hover:w-full md:text-bigA"
+              className=" z-10 flex flex-col rounded-2xl border-2 border-brown px-6 py-px text-smallA hover:scale-105 md:text-bigA"
               onClick={disconnect}
             >
               Disconnect
@@ -161,7 +161,7 @@ const NavBar = () => {
         )
       ) : (
         <button
-          className="after:content-[' '] z-10 flex flex-col text-smallA after:h-px after:w-0 after:self-center after:bg-brown after:transition-all after:duration-300 after:hover:w-full md:text-bigA"
+          className=" z-10 flex flex-col rounded-2xl bg-brown px-6 py-px text-smallA text-purple hover:scale-105 md:text-bigA"
           onClick={connect}
         >
           Connect

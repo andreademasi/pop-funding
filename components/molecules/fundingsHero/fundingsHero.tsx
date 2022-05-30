@@ -7,7 +7,8 @@ import { database } from '../../../firebaseConfig'
 export interface ItemPool {
   title: string
   description: string
-  date: number
+  dateStart: number
+  dateEnd: number
   id: string
 }
 
@@ -18,6 +19,7 @@ const FundingsHero = () => {
   const [result, setResult] = useState<boolean>(true)
 
   const getPools = useCallback(() => {
+    console.log('Data fetched')
     getDocs(dbInstance)
       .then((data) => {
         setPoolsArray(
@@ -26,7 +28,8 @@ const FundingsHero = () => {
             return {
               title: itemData.title,
               description: itemData.description,
-              date: itemData.date,
+              dateStart: itemData.dateStart,
+              dateEnd: itemData.dateEnd,
               id: item.id,
             }
           })
@@ -41,14 +44,15 @@ const FundingsHero = () => {
 
   useEffect(() => {
     getPools()
-  }, [getPools])
+  }, [])
+
   return (
     <div className="flex flex-col justify-center align-middle">
       <div className="z-10 my-40 flex flex-row justify-center text-left align-middle">
-        <h1 className=" text-center font-mont text-smallH1 tracking-wider text-brown md:flex-row md:text-bigH1">
+        <h1 className=" mx-8 text-center font-mont text-smallH1 tracking-wider text-brown md:flex-row md:text-bigH1">
           Explore or{' '}
           <span
-            className="transition-decoration cursor-pointer leading-3 underline decoration-solid decoration-2 underline-offset-8"
+            className=" cursor-pointer leading-3 underline decoration-solid decoration-2 underline-offset-8 transition-[text-decoration-thickness] hover:decoration-4"
             onClick={() => setCreate(true)}
           >
             create
@@ -57,19 +61,41 @@ const FundingsHero = () => {
         </h1>
       </div>
       {result ? (
-        <Pools poolsArray={poolsArray} />
+        poolsArray.length > 0 ? (
+          <Pools poolsArray={poolsArray} />
+        ) : (
+          <p className="mx-auto mb-16 w-fit rounded-2xl border-2 border-brown px-8 py-4 text-center text-lg shadow-2xl">
+            There are no fundings opened
+          </p>
+        )
       ) : (
-        <p className="w-70% mb-16 rounded-2xl border-2 border-brown px-8 py-4 text-center shadow-2xl">
+        <p className="mx-auto mb-16 w-fit rounded-2xl border-2 border-brown px-8 py-4 text-center shadow-2xl">
           Error fetching from database
         </p>
       )}
-      {create ? (
+      <button
+        className=" z-10 mx-auto mt-20 flex w-fit flex-col rounded-2xl bg-brown px-8 py-px text-smallA text-purple hover:scale-105 md:text-bigA"
+        onClick={() => setCreate(true)}
+      >
+        <h2 className="text-smallH2 md:text-bigH2">Create funding</h2>
+      </button>
+      <div
+        style={
+          create
+            ? {
+                opacity: 1,
+                zIndex: 100,
+              }
+            : { opacity: 0, zIndex: -100 }
+        }
+        className="transition-[z-index_opacity] duration-300"
+      >
         <CreatePool
           dbInstance={dbInstance}
           getPools={getPools}
           setCreate={setCreate}
         />
-      ) : null}
+      </div>
     </div>
   )
 }
