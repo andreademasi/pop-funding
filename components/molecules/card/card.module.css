@@ -1,0 +1,15 @@
+.cardLeft .cardRight {
+    align-self: center;
+    width: 90%;
+}
+
+@media screen and (min-width: 768px) {
+    .cardRight {
+        align-self: flex-start;
+        width: 50%;
+    }
+    .cardLeft {
+        align-self: flex-end;
+        width: 50%;
+    }
+}

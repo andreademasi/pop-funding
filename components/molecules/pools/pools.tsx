@@ -13,14 +13,15 @@ const Pools = ({ poolsArray }: PoolsProps) => {
       <div className="flex w-full flex-row flex-wrap justify-center align-middle">
         {poolsArray
           .sort((a, b) => {
-            return a.date - b.date
+            return a.dateStart - b.dateStart
           })
           .map((item, index) => {
             return (
               <Pool
                 title={item.title}
                 description={item.description}
-                date={item.date}
+                dateStart={item.dateStart}
+                dateEnd={item.dateEnd}
                 key={index}
               />
             )

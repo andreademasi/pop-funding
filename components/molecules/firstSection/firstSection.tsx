@@ -12,14 +12,6 @@ const FirstSection = () => {
             <h1 className="animate-pop3">P</h1> <h1>!</h1>
           </span>
           <h1 className="font-mont">Funding</h1>
-          <div className="mt-8 flex w-full flex-row justify-center align-middle text-smallButton font-bold md:text-bigButton">
-            <button className="transition-scale mx-3 rounded-2xl border-2 border-brown px-6 py-px text-brown duration-100 hover:scale-105">
-              Sign In
-            </button>
-            <button className="transition-scale mx-3 rounded-2xl bg-brown px-6 py-px text-purple duration-100 hover:scale-105">
-              Sign Up
-            </button>
-          </div>
         </div>
         <p></p>
       </div>

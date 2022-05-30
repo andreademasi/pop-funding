@@ -21,9 +21,9 @@ module.exports = {
             },
             keyframes: {
                 float: {
-                    '0%': { top: '100vh', opacity: '0' },
-                    '50%': { top: '50vh', opacity: '1' },
-                    '100%': { top: '-100%', opacity: '1' },
+                    '0%': { transform: 'translateY(100vh)', opacity: '0' },
+                    '50%': { transform: 'translateY(50vh)', opacity: '1' },
+                    '100%': { transform: 'translateY(-100%)', opacity: '1' },
                 },
                 pop: {
                     '0%': { transform: 'none' },
@@ -76,18 +76,18 @@ module.exports = {
         },
         plugins: [
             /*plugin(function({ addBase, config }) {
-                                                                            addBase({
-                                                                                h1: {
-                                                                                    fontFamily: config('theme.fontFamily.mont'),
-                                                                                    fontWeight: '100',
-                                                                                    //fontWeight: 'bold',
-                                                                                },
-                                                                                h2: {
-                                                                                    fontWeight: '400',
-                                                                                    //fontWeight: 'bold',
-                                                                                },
-                                                                            })
-                                                                        }),*/
+                                                                                        addBase({
+                                                                                            h1: {
+                                                                                                fontFamily: config('theme.fontFamily.mont'),
+                                                                                                fontWeight: '100',
+                                                                                                //fontWeight: 'bold',
+                                                                                            },
+                                                                                            h2: {
+                                                                                                fontWeight: '400',
+                                                                                                //fontWeight: 'bold',
+                                                                                            },
+                                                                                        })
+                                                                                    }),*/
         ],
     },
 }
