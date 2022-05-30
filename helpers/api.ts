@@ -46,7 +46,7 @@ export const createPool = async (connector: WalletConnect) => {
   appArgs.push(algosdk.encodeUint64(bd.getTime()))
   appArgs.push(algosdk.encodeUint64(ed.getTime()))
   appArgs.push(algosdk.encodeUint64(1000000))
-  appArgs.push(new Uint8Array(Buffer.from(sender)))
+  appArgs.push(algosdk.decodeAddress(sender).publicKey)
   appArgs.push(algosdk.encodeUint64(cd.getTime()))
   let txn = algosdk.makeApplicationCreateTxn(
     sender,
