@@ -1,7 +1,10 @@
 import { ErrorResponse } from 'algosdk/dist/types/src/client/v2/algod/models/types'
 import { IAssetData } from './types'
+import WalletConnect from '@walletconnect/client'
 import algosdk from 'algosdk'
-
+import closePoolContract from '../contract/close.teal'
+import createPoolContract from '../contract/main.teal'
+import { formatJsonRpcRequest } from '@json-rpc-tools/utils'
 export enum ChainType {
   MainNet = 'mainnet',
   TestNet = 'testnet',
@@ -27,6 +30,87 @@ function clientForChain(chain: ChainType): algosdk.Algodv2 {
     default:
       throw new Error(`Unknown chain type: ${chain}`)
   }
+}
+
+export const createPool = async (connector: WalletConnect) => {
+  const client = clientForChain(ChainType.TestNet)
+  const sender = connector.accounts[0]
+  let params = await client.getTransactionParams().do()
+  const onComplete = algosdk.OnApplicationComplete.NoOpOC
+  const contract = await compileProgram(client, createPoolContract)
+  const clear = await compileProgram(client, closePoolContract)
+  let bd = new Date()
+  let ed = new Date(bd.getTime() + 60000) // 1 min
+  let cd = new Date(ed.getTime() + 60000) // 1 min
+  let appArgs = []
+  appArgs.push(algosdk.encodeUint64(bd.getTime()))
+  appArgs.push(algosdk.encodeUint64(ed.getTime()))
+  appArgs.push(algosdk.encodeUint64(1000000))
+  appArgs.push(new Uint8Array(Buffer.from(sender)))
+  appArgs.push(algosdk.encodeUint64(cd.getTime()))
+  let txn = algosdk.makeApplicationCreateTxn(
+    sender,
+    params,
+    onComplete,
+    contract,
+    clear,
+    1,
+    0,
+    5,
+    3,
+    appArgs
+  )
+
+  const txns = [txn]
+  const txnsToSign = txns.map((txn) => {
+    const encodedTxn = Buffer.from(
+      algosdk.encodeUnsignedTransaction(txn)
+    ).toString('base64')
+
+    return {
+      txn: encodedTxn,
+      message: 'Creating contract',
+      // Note: if the transaction does not need to be signed (because it's part of an atomic group
+      // that will be signed by another party), specify an empty singers array like so:
+      // signers: [],
+    }
+  })
+  const requestParams = [txnsToSign]
+
+  const request = formatJsonRpcRequest('algo_signTxn', requestParams)
+  const result: Array<string | null> = await connector.sendCustomRequest(
+    request
+  )
+
+  const decodedResult = result.map((element) => {
+    return element ? new Uint8Array(Buffer.from(element, 'base64')) : null
+  })
+  // send and await
+  await client.sendRawTransaction(decodedResult).do()
+  await algosdk.waitForConfirmation(client, txn.txID(), 2)
+  let transactionResponse = await client
+    .pendingTransactionInformation(txn.txID())
+    .do()
+  console.log('Called app-id:', transactionResponse['txn']['txn']['apid'])
+  if (transactionResponse['global-state-delta'] !== undefined) {
+    console.log(
+      'Global State updated:',
+      transactionResponse['global-state-delta']
+    )
+  }
+
+  console.log(txn.txID())
+}
+
+// helper function to compile program source
+async function compileProgram(client: algosdk.Algodv2, programSource: string) {
+  let encoder = new TextEncoder()
+  let programBytes = encoder.encode(programSource)
+  let compileResponse = await client.compile(programBytes).do()
+  let compiledBytes = new Uint8Array(
+    Buffer.from(compileResponse.result, 'base64')
+  )
+  return compiledBytes
 }
 
 export async function apiGetAccountAssets(
