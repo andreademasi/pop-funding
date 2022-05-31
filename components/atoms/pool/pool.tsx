@@ -1,5 +1,6 @@
 import React from 'react'
 import { useInView } from 'react-intersection-observer'
+import { MAX_TIMESTAMP } from '../../../utilities/constants/maxTimestamp'
 
 interface PoolProps {
   title: string
@@ -10,8 +11,11 @@ interface PoolProps {
 
 const dateConverter = (date: number) => {
   const x = new Date(date)
-  const y = x.toString().split('GMT')[0].slice(4)
-  return y == 'lid Date' ? x.toString() : y
+  const y =
+    x >= new Date(MAX_TIMESTAMP)
+      ? 'No end date'
+      : x.toString().split('GMT')[0].slice(4)
+  return y == 'lid Date' ? 'Invalid date' : y
 }
 
 const Pool = ({ title, description, dateStart, dateEnd }: PoolProps) => {
@@ -29,12 +33,12 @@ const Pool = ({ title, description, dateStart, dateEnd }: PoolProps) => {
           ? { opacity: 1 }
           : { opacity: 0, transform: 'scale(0.7) rotate(4deg)' }
       }
-      className="m-4 flex h-fit flex-[1_1_280px] flex-col justify-center rounded-2xl bg-gradient-to-tl from-transparentPurple via-transparentDarkBlue to-transparentPink align-middle shadow-lg transition-[transform_opacity] duration-200 hover:scale-[1.01]"
+      className="relative m-4 flex h-fit flex-[1_1_280px] flex-col justify-center rounded-2xl bg-gradient-to-tl from-transparentPurple via-transparentDarkBlue to-transparentPink align-middle shadow-lg transition-[transform_opacity] duration-200 hover:scale-[1.01]"
     >
-      <p className="relative top-2 left-2 w-fit rounded-xl bg-transparentWhite px-2 py-1 text-sm opacity-70">
+      <p className="relative top-2 left-2 mb-2 w-fit rounded-xl bg-transparentWhite px-2 py-1 text-sm opacity-70">
         From: {dateConverter(dateStart)}
       </p>
-      <p className="relative top-2 left-2 w-fit rounded-xl bg-transparentWhite px-2 py-1 text-sm opacity-70">
+      <p className="absolute bottom-2 right-2  w-fit rounded-xl bg-transparentWhite px-2 py-1 text-sm opacity-70">
         To: {dateConverter(dateEnd)}
       </p>
       <h3 className="my-4 mx-4 text-xl font-bold tracking-wider">{title}</h3>
@@ -44,7 +48,7 @@ const Pool = ({ title, description, dateStart, dateEnd }: PoolProps) => {
       <button className="transition-scale mx-auto mb-4 w-fit rounded-2xl border-2 border-brown px-4  py-px text-center text-brown duration-100 hover:scale-105">
         Info
       </button>
-      <button className="transition-scale mx-auto mb-4 w-fit rounded-2xl border-2 border-brown px-4  py-px text-center text-brown duration-100 hover:scale-105">
+      <button className="transition-scale mx-auto mb-16 w-fit rounded-2xl border-2 border-brown px-4  py-px text-center text-brown duration-100 hover:scale-105">
         Contribute
       </button>
     </div>

@@ -1,5 +1,6 @@
 import { addDoc, CollectionReference, DocumentData } from 'firebase/firestore'
 import React, { useEffect, useState } from 'react'
+import { MAX_TIMESTAMP } from '../../../utilities/constants/maxTimestamp'
 interface CreatePoolProps {
   dbInstance: CollectionReference<DocumentData>
   getPools: () => void
@@ -39,15 +40,19 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
     )
   }
 
+  const never = () => {
+    setEndDate(new Date(MAX_TIMESTAMP))
+  }
+
   useEffect(() => {
     endDate.setHours(endDate.getHours() + 1)
   }, [])
 
   const inputClass =
-    'rounded-2xl shadow-xl border-brown p-2 m-2 w-20% bg-[#0000005e]'
+    'rounded-2xl shadow-xl border-brown w-full p-2 m-2 bg-[#0000005e]'
 
   return (
-    <div className="m-100% fixed top-1/2 left-1/2 z-50 flex w-[80%] -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded-2xl bg-purple p-8 shadow-[0_0px_50px_50rem_#000000a0] md:w-1/2">
+    <div className="m-100% fixed top-1/2 left-1/2 z-50 flex w-[80%] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center overflow-hidden rounded-2xl bg-purple p-8 shadow-[0_0px_50px_50rem_#000000a0] md:w-1/2">
       <div
         onClick={() => setCreate(false)}
         className="absolute top-0 right-0 mt-4 mr-4 cursor-pointer"
@@ -86,15 +91,29 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
         id="start-date"
         name="start-date"
       />
-      <input
-        type="datetime-local"
-        value={dateToString(endDate)}
-        min={dateToString(endDate)}
-        className={inputClass}
-        onChange={(event) => setEndDate(stringToDate(event.target.value))}
-        id="end-date"
-        name="end-date"
-      />
+      <span className="flex w-full flex-col items-center justify-center md:flex-row">
+        <input
+          type="datetime-local"
+          value={dateToString(endDate)}
+          min={dateToString(endDate)}
+          className={inputClass + ' md:ml-0'}
+          onChange={(event) => setEndDate(stringToDate(event.target.value))}
+          id="end-date"
+          name="end-date"
+        />
+
+        <button
+          style={
+            endDate >= new Date(MAX_TIMESTAMP)
+              ? { backgroundColor: '#dfb59c', color: '#3b2d60' }
+              : {}
+          }
+          className="mx-2 w-fit rounded-2xl px-2 py-px transition-[background_color] duration-200"
+          onClick={() => never()}
+        >
+          NEVER
+        </button>
+      </span>
 
       <button
         style={title.length < 1 ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
