@@ -54,16 +54,10 @@ const Pool = ({
           ? { opacity: 1 }
           : { opacity: 0, transform: 'scale(0.7) rotate(4deg)' }
       }
-      className="relative m-4 flex h-fit flex-[1_1_280px] flex-col justify-center rounded-2xl bg-gradient-to-tl from-transparentPurple via-transparentDarkBlue to-transparentPink pb-16 align-middle shadow-lg transition-[transform_opacity] duration-200 hover:scale-[1.01]"
+      className="relative m-4 flex h-fit flex-[1_1_280px] flex-col justify-center rounded-2xl bg-gradient-to-tl from-transparentPurple via-transparentDarkBlue to-transparentPink align-middle shadow-lg transition-[transform_opacity] duration-200 hover:scale-[1.01]"
     >
       <p className="relative top-2 left-2 mb-2 w-fit rounded-xl bg-transparentWhite px-2 py-1 text-sm opacity-70">
         Start: {dateConverter(dateStart)}
-      </p>
-      <p className="absolute bottom-2 left-2  w-fit rounded-xl bg-transparentWhite px-2 py-1 text-sm opacity-70">
-        End: {dateConverter(dateEnd)}
-      </p>
-      <p className="absolute bottom-2 right-2  w-fit rounded-xl bg-transparentWhite px-2 py-1 text-sm opacity-70">
-        Close: {dateConverter(dateClose)}
       </p>
       <h3 className="my-4 mx-4 text-xl font-bold tracking-wider">{title}</h3>
       <p className="mx-6 mt-4 mb-8 max-h-[10em] overflow-y-scroll whitespace-pre-wrap px-2 font-thin opacity-90">
@@ -92,6 +86,14 @@ const Pool = ({
         ) : (
           <></>
         )}
+      </div>
+      <div className="mt-8 mb-2 flex flex-row items-center justify-between">
+        <p className="mx-2 flex w-fit flex-row flex-wrap rounded-xl bg-transparentWhite px-2 py-1 text-sm opacity-70">
+          <span>End:</span> <span>{dateConverter(dateEnd)}</span>
+        </p>
+        <p className="mx-2 flex w-fit flex-row flex-wrap rounded-xl bg-transparentWhite px-2 py-1 text-sm opacity-70">
+          <span>Close:</span> <span>{dateConverter(dateClose)}</span>
+        </p>
       </div>
     </div>
   )
