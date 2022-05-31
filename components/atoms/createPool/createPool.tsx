@@ -12,6 +12,8 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
   const [description, setDescription] = useState<string>('')
   const [startDate, setStartDate] = useState<Date>(new Date())
   const [endDate, setEndDate] = useState<Date>(new Date())
+  const [closeDate, setCloseDate] = useState<Date>(new Date())
+  const [goal, setGoal] = useState<number>(0)
 
   const check = new Date()
 
@@ -21,6 +23,9 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
       description: description,
       dateStart: Date.parse(startDate.toString()),
       dateEnd: Date.parse(endDate.toString()),
+      dateClose: Date.parse(closeDate.toString()),
+      goal: goal,
+      current: 0,
     }).then((response) => {
       if (response) {
         setTitle('')
@@ -49,42 +54,53 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
     }`
   }
 
-  const never = () => {
-    setEndDate(new Date(MAX_TIMESTAMP))
-  }
-
   const resetEnd = () => {
     const x = new Date()
     x.setHours(x.getHours() + 1)
     setEndDate(x)
+    x.setHours(x.getHours() + 1)
+    setCloseDate(x)
   }
 
   const handleNowClick = () => {
     setStartDate(new Date())
   }
 
-  const handleNeverClick = () => {
-    if (endDate >= new Date(MAX_TIMESTAMP)) {
-      resetEnd()
-    } else {
-      never()
-    }
-  }
-
   const handleCreateClick = () => {
     if (title.length < 1) {
       alert('Please enter a title')
+    } else if (description.length < 1) {
+      alert('Please enter a description')
     } else if (isNaN(startDate.getDate())) alert('Start date is invalid')
     else if (isNaN(endDate.getDate())) alert('End date is invalid')
+    else if (isNaN(closeDate.getDate())) alert('Close date is invalid')
     else if (startDate.getTime() >= endDate.getTime())
       alert('Invalid date end, you cannot travel back in time')
     else if (
       startDate.toISOString().slice(0, -7) < check.toISOString().slice(0, -7)
     )
       alert('Invalid start date, you cannot create a funding in the past')
+    else if (goal == 0 || isNaN(goal)) alert('Please enter a goal')
     else {
       addPool(title, description)
       setCreate(false)
+    }
+  }
+
+  const notGoodFields = () => {
+    if (
+      title.length < 1 ||
+      description.length < 1 ||
+      isNaN(startDate.getDate()) ||
+      isNaN(endDate.getDate()) ||
+      startDate.getTime() >= endDate.getTime() ||
+      startDate.toISOString().slice(0, -7) < check.toISOString().slice(0, -7) ||
+      goal == 0 ||
+      isNaN(goal)
+    ) {
+      return true
+    } else {
+      return false
     }
   }
 
@@ -96,7 +112,7 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
     'rounded-2xl shadow-xl border-brown w-full p-2 m-2 bg-[#0000005e]'
 
   return (
-    <div className="m-100% fixed top-1/2 left-1/2 z-50 flex max-h-full w-[80%] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center overflow-x-hidden rounded-2xl bg-purple p-8 shadow-[0_0px_50px_50rem_#000000b0] md:w-1/2">
+    <div className="m-100% fixed top-1/2 left-1/2 z-50 flex max-h-full w-[80%] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center overflow-x-hidden overflow-y-scroll rounded-2xl bg-purple p-8 shadow-[0_0px_50px_50rem_#000000b0] md:w-fit">
       <div
         onClick={() => setCreate(false)}
         className="absolute top-0 right-0 mt-4 mr-4 cursor-pointer"
@@ -109,34 +125,26 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
           <path d="M10 8.586L2.929 1.515 1.515 2.929 8.586 10l-7.071 7.071 1.414 1.414L10 11.414l7.071 7.071 1.414-1.414L11.414 10l7.071-7.071-1.414-1.414L10 8.586z" />
         </svg>
       </div>
-      <h2 className="my-4 text-center text-xl font-bold tracking-wider">
+      <h2 className="mb-4 mt-16 text-center text-xl font-bold tracking-wider md:mt-4">
         Create a new pool
       </h2>
       <input
         type={'text'}
         className={inputClass}
         onChange={(e) => setTitle(e.target.value)}
-        placeholder="Title *"
+        placeholder="Title"
         value={title}
       />
       <textarea
-        className={inputClass}
+        className={inputClass + ' min-h-[100px]  '}
         rows={5}
         onChange={(e) => setDescription(e.target.value)}
         placeholder="Description"
         value={description}
       />
-      <span className="flex w-full flex-col items-center justify-evenly md:flex-row">
-        <p>From: </p>
-        <span className="mx-2 flex flex-row items-center justify-center">
-          <input
-            type="datetime-local"
-            value={dateToString(startDate)}
-            min={dateToString(startDate)}
-            className={inputClass + ' w-fit'}
-            onChange={(event) => setStartDate(stringToDate(event.target.value))}
-            name="start-date"
-          />
+      <div className="flex flex-col items-center justify-center md:flex-row">
+        <span className="relative flex w-full flex-col items-center justify-evenly ">
+          <p className="relative top-0 left-[20px] mr-auto">Start date: </p>
           <button
             style={
               !isNaN(startDate.getDate()) &&
@@ -145,57 +153,76 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
                 ? { backgroundColor: '#dfb59c', color: '#3b2d60' }
                 : {}
             }
-            className="mx-2 w-fit rounded-2xl px-2 py-px transition-[background_color] duration-200"
+            className="absolute top-[2px] right-[20px] mx-2 ml-0 w-fit rounded-2xl border-2 border-brown px-2 py-px text-xs transition-[background_color] duration-200 md:top-0 md:text-[0.95rem]"
             onClick={handleNowClick}
           >
             NOW
           </button>
+          <span className="mx-2 flex flex-row items-center justify-center">
+            <input
+              type="datetime-local"
+              value={dateToString(startDate)}
+              min={dateToString(startDate)}
+              className={inputClass + ' w-fit'}
+              onChange={(event) =>
+                setStartDate(stringToDate(event.target.value))
+              }
+              name="start-date"
+            />
+          </span>
         </span>
-      </span>
-      <span className="mt-4 flex w-full flex-col items-center justify-evenly md:flex-row">
-        <p className="mr-6">To: </p>
-        <span className="mx-2 flex flex-row items-center justify-center">
+        <span className="mt-4 flex w-full flex-col items-center justify-evenly md:mt-0">
+          <p className="relative left-[20px] mr-auto">End date: </p>
+          <span className="mx-2 mr-auto flex flex-row items-center justify-center">
+            <input
+              type="datetime-local"
+              value={dateToString(endDate)}
+              min={dateToString(endDate)}
+              className={inputClass + ' w-fit '}
+              onChange={(event) => setEndDate(stringToDate(event.target.value))}
+              name="end-date"
+            />
+          </span>
+        </span>
+        <span className="mt-4 flex w-full flex-col items-center justify-evenly md:mt-0">
+          <p className="relative left-[20px] mr-auto">Close date: </p>
+          <span className="mx-2 mr-auto flex flex-row items-center justify-center">
+            <input
+              type="datetime-local"
+              value={dateToString(closeDate)}
+              min={dateToString(closeDate)}
+              className={inputClass + ' w-fit '}
+              onChange={(event) =>
+                setCloseDate(stringToDate(event.target.value))
+              }
+              name="close-date"
+            />
+          </span>
+        </span>
+      </div>
+      <span className="mt-4 flex flex-col items-center justify-center md:flex-row ">
+        <p className="relative top-0 left-[5px] mr-auto md:mr-2">Goal: </p>
+        <span className="relative flex items-center justify-center">
           <input
-            type="datetime-local"
-            value={dateToString(endDate)}
-            min={dateToString(endDate)}
-            className={
-              inputClass +
-              ' transition-width cubic-bezier-0.165-0.84-0.44-1 w-fit duration-200'
-            }
-            style={endDate >= new Date(MAX_TIMESTAMP) ? { opacity: 0.5 } : {}}
-            disabled={endDate >= new Date(MAX_TIMESTAMP)}
-            onChange={(event) => setEndDate(stringToDate(event.target.value))}
-            name="end-date"
+            type="number"
+            step={10}
+            className={inputClass + ' w-full '}
+            onChange={(e) => setGoal(parseFloat(e.target.value))}
+            value={goal}
           />
-
-          <button
-            style={
-              endDate >= new Date(MAX_TIMESTAMP)
-                ? { backgroundColor: '#dfb59c', color: '#3b2d60' }
-                : {}
-            }
-            className=" w-fit rounded-2xl px-2 py-px transition-[background_color] duration-200"
-            onClick={handleNeverClick}
-          >
-            NEVER
-          </button>
+          <p className="absolute right-8 top-4 opacity-50 ">Algo</p>
         </span>
       </span>
-
       <button
-        style={title.length < 1 ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+        style={notGoodFields() ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
         className="mx-auto mt-4 rounded-2xl bg-brown px-4 py-2 text-purple transition-transform hover:scale-105 md:w-1/2"
-        disabled={title.length < 1}
         onClick={handleCreateClick}
       >
         Create
       </button>
-      {title.length < 1 ? (
-        <p className="text-red mt-2 text-center opacity-50">
-          Title is required
-        </p>
-      ) : null}
+      <p className="text-red mt-2 text-center opacity-50">
+        All fields are required
+      </p>
     </div>
   )
 }
