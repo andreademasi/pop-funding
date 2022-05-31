@@ -81,7 +81,7 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
     else if (
       startDate.toISOString().slice(0, -7) < check.toISOString().slice(0, -7)
     )
-      alert('Invalid start date')
+      alert('Invalid start date, you cannot create a funding in the past')
     else {
       addPool(title, description)
       setCreate(false)
