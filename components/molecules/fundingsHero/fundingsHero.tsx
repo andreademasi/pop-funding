@@ -80,7 +80,7 @@ const FundingsHero = () => {
     if (x > end) return 1
   }
 
-  const classH2 = 'text-smallH2 md:text-bigH2 mt-8'
+  const classH2 = 'text-smallH2 md:text-bigH2 mt-8 ml-8'
 
   return (
     <div className="flex flex-col justify-center align-middle">
