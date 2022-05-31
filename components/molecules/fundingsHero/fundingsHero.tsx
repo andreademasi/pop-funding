@@ -24,6 +24,8 @@ const FundingsHero = () => {
   const [activeArray, setActiveArray] = useState<Array<ItemPool>>([])
   const [result, setResult] = useState<boolean>(true)
 
+  const [state, setState] = useState<string>('Fetching from database')
+
   const getPools = useCallback(() => {
     console.log('Data fetched')
     getDocs(dbInstance)
@@ -48,6 +50,9 @@ const FundingsHero = () => {
       .catch((error) => {
         console.log(error)
         setResult(false)
+      })
+      .finally(() => {
+        setState('There are no pools')
       })
   }, [dbInstance])
 
@@ -100,17 +105,17 @@ const FundingsHero = () => {
         poolsArray.length > 0 ? (
           <div className=" mx-auto flex w-[95%] flex-col">
             <h2 className={classH2}>Active pools</h2>
-            <Pools poolsArray={activeArray} />
+            <Pools poolsArray={activeArray} type={'active'} />
             <h2 className={classH2}>Future pools</h2>
-            <Pools poolsArray={futureArray} />
+            <Pools poolsArray={futureArray} type={'future'} />
             <div className="opacity-70">
               <h2 className={classH2}>Past pools</h2>
-              <Pools poolsArray={pastArray} />
+              <Pools poolsArray={pastArray} type={'past'} />
             </div>
           </div>
         ) : (
           <p className="mx-auto mb-16 w-fit rounded-2xl border-2 border-brown px-8 py-4 text-center text-lg shadow-2xl">
-            There are no fundings opened
+            {state}
           </p>
         )
       ) : (
