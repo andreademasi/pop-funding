@@ -12,7 +12,6 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
   const [description, setDescription] = useState<string>('')
   const [startDate, setStartDate] = useState<Date>(new Date())
   const [endDate, setEndDate] = useState<Date>(new Date())
-  const [toggleNever, setToggleNever] = useState<boolean>(false)
 
   const check = new Date()
 
@@ -60,12 +59,14 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
     setEndDate(x)
   }
 
+  const handleNowClick = () => {
+    setStartDate(new Date())
+  }
+
   const handleNeverClick = () => {
-    if (toggleNever) {
-      setToggleNever(false)
+    if (endDate >= new Date(MAX_TIMESTAMP)) {
       resetEnd()
     } else {
-      setToggleNever(true)
       never()
     }
   }
@@ -73,9 +74,14 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
   const handleCreateClick = () => {
     if (title.length < 1) {
       alert('Please enter a title')
-    } else if (startDate.getTime() >= endDate.getTime())
+    } else if (isNaN(startDate.getDate())) alert('Start date is invalid')
+    else if (isNaN(endDate.getDate())) alert('End date is invalid')
+    else if (startDate.getTime() >= endDate.getTime())
       alert('Invalid date end, you cannot travel back in time')
-    else if (startDate < check) alert('Invalid start date')
+    else if (
+      startDate.toISOString().slice(0, -7) < check.toISOString().slice(0, -7)
+    )
+      alert('Invalid start date')
     else {
       addPool(title, description)
       setCreate(false)
@@ -120,35 +126,59 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
         placeholder="Description"
         value={description}
       />
-      <input
-        type="datetime-local"
-        value={dateToString(startDate)}
-        min={dateToString(startDate)}
-        className={inputClass}
-        onChange={(event) => setStartDate(stringToDate(event.target.value))}
-        name="start-date"
-      />
-      <span className="flex w-full flex-col items-center justify-center md:flex-row">
-        <input
-          type="datetime-local"
-          value={dateToString(endDate)}
-          min={dateToString(endDate)}
-          className={inputClass + ' md:ml-0'}
-          onChange={(event) => setEndDate(stringToDate(event.target.value))}
-          name="end-date"
-        />
+      <span className="flex w-full flex-col items-center justify-evenly md:flex-row">
+        <p>From: </p>
+        <span className="mx-2 flex flex-row items-center justify-center">
+          <input
+            type="datetime-local"
+            value={dateToString(startDate)}
+            min={dateToString(startDate)}
+            className={inputClass + ' w-fit'}
+            onChange={(event) => setStartDate(stringToDate(event.target.value))}
+            name="start-date"
+          />
+          <button
+            style={
+              !isNaN(startDate.getDate()) &&
+              startDate.toISOString().slice(0, -7) ==
+                new Date().toISOString().slice(0, -7)
+                ? { backgroundColor: '#dfb59c', color: '#3b2d60' }
+                : {}
+            }
+            className="mx-2 w-fit rounded-2xl px-2 py-px transition-[background_color] duration-200"
+            onClick={handleNowClick}
+          >
+            NOW
+          </button>
+        </span>
+      </span>
+      <span className="mt-4 flex w-full flex-col items-center justify-evenly md:flex-row">
+        <p className="mr-6">To: </p>
+        <span className="mx-2 flex flex-row items-center justify-center">
+          <input
+            type="datetime-local"
+            value={dateToString(endDate)}
+            min={dateToString(endDate)}
+            className={
+              inputClass +
+              ' transition-width cubic-bezier-0.165-0.84-0.44-1 w-fit duration-200'
+            }
+            onChange={(event) => setEndDate(stringToDate(event.target.value))}
+            name="end-date"
+          />
 
-        <button
-          style={
-            endDate >= new Date(MAX_TIMESTAMP)
-              ? { backgroundColor: '#dfb59c', color: '#3b2d60' }
-              : {}
-          }
-          className="mx-2 w-fit rounded-2xl px-2 py-px transition-[background_color] duration-200"
-          onClick={handleNeverClick}
-        >
-          NEVER
-        </button>
+          <button
+            style={
+              endDate >= new Date(MAX_TIMESTAMP)
+                ? { backgroundColor: '#dfb59c', color: '#3b2d60' }
+                : {}
+            }
+            className=" w-fit rounded-2xl px-2 py-px transition-[background_color] duration-200"
+            onClick={handleNeverClick}
+          >
+            NEVER
+          </button>
+        </span>
       </span>
 
       <button
