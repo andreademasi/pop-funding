@@ -1,6 +1,5 @@
 import { addDoc, CollectionReference, DocumentData } from 'firebase/firestore'
-import React, { useState } from 'react'
-
+import React, { useEffect, useState } from 'react'
 interface CreatePoolProps {
   dbInstance: CollectionReference<DocumentData>
   getPools: () => void
@@ -10,12 +9,15 @@ interface CreatePoolProps {
 const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
   const [title, setTitle] = useState<string>('')
   const [description, setDescription] = useState<string>('')
+  const [startDate, setStartDate] = useState<Date>(new Date())
+  const [endDate, setEndDate] = useState<Date>(new Date())
 
   const addPool = (title: string, description: string) => {
     addDoc(dbInstance, {
       title: title,
       description: description,
-      date: Date.now(),
+      dateStart: Date.parse(startDate.toString()),
+      dateEnd: Date.parse(endDate.toString()),
     }).then((response) => {
       if (response) {
         setTitle('')
@@ -24,6 +26,20 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
       }
     })
   }
+
+  const stringToDate = (date: string) => {
+    return new Date(date)
+  }
+
+  const dateToString = (date: Date) => {
+    return (
+      date.toISOString().split(':')[0] + ':' + date.toISOString().split(':')[1]
+    )
+  }
+
+  useEffect(() => {
+    endDate.setHours(endDate.getHours() + 1)
+  }, [])
 
   const inputClass =
     'rounded-2xl shadow-xl border-brown p-2 m-2 w-20% bg-[#0000005e]'
@@ -59,6 +75,25 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
         placeholder="Description"
         value={description}
       />
+      <input
+        type="datetime-local"
+        value={dateToString(startDate)}
+        min={dateToString(startDate)}
+        className={inputClass}
+        onChange={(event) => setStartDate(stringToDate(event.target.value))}
+        id="start-date"
+        name="start-date"
+      />
+      <input
+        type="datetime-local"
+        value={dateToString(endDate)}
+        min={dateToString(endDate)}
+        className={inputClass}
+        onChange={(event) => setEndDate(stringToDate(event.target.value))}
+        id="end-date"
+        name="end-date"
+      />
+
       <button
         style={title.length < 1 ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
         className="mx-auto mt-4 rounded-2xl bg-brown px-4 py-2 text-purple transition-transform hover:scale-105 md:w-1/2"
