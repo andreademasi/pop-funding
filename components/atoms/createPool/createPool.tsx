@@ -13,18 +13,20 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
   const [endDate, setEndDate] = useState<Date>(new Date())
 
   const addPool = (title: string, description: string) => {
-    addDoc(dbInstance, {
-      title: title,
-      description: description,
-      dateStart: Date.parse(startDate.toString()),
-      dateEnd: Date.parse(endDate.toString()),
-    }).then((response) => {
-      if (response) {
-        setTitle('')
-        setDescription('')
-        getPools()
-      }
-    })
+    if (title.length >= 1 && startDate.getTime() < endDate.getTime())
+      addDoc(dbInstance, {
+        title: title,
+        description: description,
+        dateStart: Date.parse(startDate.toString()),
+        dateEnd: Date.parse(endDate.toString()),
+      }).then((response) => {
+        if (response) {
+          setTitle('')
+          setDescription('')
+          getPools()
+        }
+      })
+    else alert('Date end must be after date start')
   }
 
   const stringToDate = (date: string) => {

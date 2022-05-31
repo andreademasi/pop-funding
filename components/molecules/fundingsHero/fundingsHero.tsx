@@ -74,7 +74,7 @@ const FundingsHero = () => {
         </p>
       )}
       <button
-        className=" z-10 mx-auto mt-20 flex w-fit flex-col rounded-2xl bg-brown px-8 py-px text-smallA text-purple hover:scale-105 md:text-bigA"
+        className=" z-10 mx-auto mt-20 flex w-fit flex-col rounded-2xl bg-brown px-8 py-px text-smallA text-purple transition-transform hover:scale-105 md:text-bigA"
         onClick={() => setCreate(true)}
       >
         <h2 className="text-smallH2 md:text-bigH2">Create funding</h2>
