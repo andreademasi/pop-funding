@@ -1,5 +1,5 @@
 import { addDoc, CollectionReference, DocumentData } from 'firebase/firestore'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { MAX_TIMESTAMP } from '../../../utilities/constants/maxTimestamp'
 interface CreatePoolProps {
   dbInstance: CollectionReference<DocumentData>
@@ -12,22 +12,23 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
   const [description, setDescription] = useState<string>('')
   const [startDate, setStartDate] = useState<Date>(new Date())
   const [endDate, setEndDate] = useState<Date>(new Date())
+  const [toggleNever, setToggleNever] = useState<boolean>(false)
+
+  const check = new Date()
 
   const addPool = (title: string, description: string) => {
-    if (title.length >= 1 && startDate.getTime() < endDate.getTime())
-      addDoc(dbInstance, {
-        title: title,
-        description: description,
-        dateStart: Date.parse(startDate.toString()),
-        dateEnd: Date.parse(endDate.toString()),
-      }).then((response) => {
-        if (response) {
-          setTitle('')
-          setDescription('')
-          getPools()
-        }
-      })
-    else alert('Date end must be after date start')
+    addDoc(dbInstance, {
+      title: title,
+      description: description,
+      dateStart: Date.parse(startDate.toString()),
+      dateEnd: Date.parse(endDate.toString()),
+    }).then((response) => {
+      if (response) {
+        setTitle('')
+        setDescription('')
+        getPools()
+      }
+    })
   }
 
   const stringToDate = (date: string) => {
@@ -35,24 +36,61 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
   }
 
   const dateToString = (date: Date) => {
-    return (
-      date.toISOString().split(':')[0] + ':' + date.toISOString().split(':')[1]
-    )
+    const separator = '-'
+    const day = date.getDate()
+    const month = date.getMonth() + 1
+    const year = date.getFullYear()
+    const hour = date.getHours()
+    const minutes = date.getMinutes()
+
+    return `${year}${separator}${
+      month < 10 ? `0${month}` : `${month}`
+    }${separator}${day}T${hour < 10 ? `0${hour}` : `${hour}`}:${
+      minutes < 10 ? `0${minutes}` : `${minutes}`
+    }`
   }
 
   const never = () => {
     setEndDate(new Date(MAX_TIMESTAMP))
   }
 
+  const resetEnd = () => {
+    const x = new Date()
+    x.setHours(x.getHours() + 1)
+    setEndDate(x)
+  }
+
+  const handleNeverClick = () => {
+    if (toggleNever) {
+      setToggleNever(false)
+      resetEnd()
+    } else {
+      setToggleNever(true)
+      never()
+    }
+  }
+
+  const handleCreateClick = () => {
+    if (title.length < 1) {
+      alert('Please enter a title')
+    } else if (startDate.getTime() >= endDate.getTime())
+      alert('Invalid date end, you cannot travel back in time')
+    else if (startDate < check) alert('Invalid start date')
+    else {
+      addPool(title, description)
+      setCreate(false)
+    }
+  }
+
   useEffect(() => {
-    endDate.setHours(endDate.getHours() + 1)
+    resetEnd()
   }, [])
 
   const inputClass =
     'rounded-2xl shadow-xl border-brown w-full p-2 m-2 bg-[#0000005e]'
 
   return (
-    <div className="m-100% fixed top-1/2 left-1/2 z-50 flex w-[80%] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center overflow-hidden rounded-2xl bg-purple p-8 shadow-[0_0px_50px_50rem_#000000a0] md:w-1/2">
+    <div className="m-100% fixed top-1/2 left-1/2 z-50 flex max-h-full w-[80%] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center overflow-x-hidden rounded-2xl bg-purple p-8 shadow-[0_0px_50px_50rem_#000000b0] md:w-1/2">
       <div
         onClick={() => setCreate(false)}
         className="absolute top-0 right-0 mt-4 mr-4 cursor-pointer"
@@ -88,7 +126,6 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
         min={dateToString(startDate)}
         className={inputClass}
         onChange={(event) => setStartDate(stringToDate(event.target.value))}
-        id="start-date"
         name="start-date"
       />
       <span className="flex w-full flex-col items-center justify-center md:flex-row">
@@ -98,7 +135,6 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
           min={dateToString(endDate)}
           className={inputClass + ' md:ml-0'}
           onChange={(event) => setEndDate(stringToDate(event.target.value))}
-          id="end-date"
           name="end-date"
         />
 
@@ -109,7 +145,7 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
               : {}
           }
           className="mx-2 w-fit rounded-2xl px-2 py-px transition-[background_color] duration-200"
-          onClick={() => never()}
+          onClick={handleNeverClick}
         >
           NEVER
         </button>
@@ -119,10 +155,7 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
         style={title.length < 1 ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
         className="mx-auto mt-4 rounded-2xl bg-brown px-4 py-2 text-purple transition-transform hover:scale-105 md:w-1/2"
         disabled={title.length < 1}
-        onClick={() => {
-          addPool(title, description)
-          setCreate(false)
-        }}
+        onClick={handleCreateClick}
       >
         Create
       </button>
