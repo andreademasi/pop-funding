@@ -163,6 +163,8 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
               inputClass +
               ' transition-width cubic-bezier-0.165-0.84-0.44-1 w-fit duration-200'
             }
+            style={endDate >= new Date(MAX_TIMESTAMP) ? { opacity: 0.5 } : {}}
+            disabled={endDate >= new Date(MAX_TIMESTAMP)}
             onChange={(event) => setEndDate(stringToDate(event.target.value))}
             name="end-date"
           />
