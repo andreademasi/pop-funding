@@ -22,6 +22,9 @@ const Pools = ({ poolsArray }: PoolsProps) => {
                 description={item.description}
                 dateStart={item.dateStart}
                 dateEnd={item.dateEnd}
+                dateClose={item.dateClose}
+                goal={item.goal}
+                current={item.current}
                 key={index}
               />
             )

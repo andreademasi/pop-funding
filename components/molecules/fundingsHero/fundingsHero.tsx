@@ -9,6 +9,9 @@ export interface ItemPool {
   description: string
   dateStart: number
   dateEnd: number
+  dateClose: number
+  goal: number
+  current: number
   id: string
 }
 
@@ -16,6 +19,9 @@ const FundingsHero = () => {
   const [create, setCreate] = useState<boolean>(false)
   const dbInstance = collection(database, 'active-pools')
   const [poolsArray, setPoolsArray] = useState<Array<ItemPool>>([])
+  const [pastArray, setPastArray] = useState<Array<ItemPool>>([])
+  const [futureArray, setFutureArray] = useState<Array<ItemPool>>([])
+  const [activeArray, setActiveArray] = useState<Array<ItemPool>>([])
   const [result, setResult] = useState<boolean>(true)
 
   const getPools = useCallback(() => {
@@ -30,6 +36,9 @@ const FundingsHero = () => {
               description: itemData.description,
               dateStart: itemData.dateStart,
               dateEnd: itemData.dateEnd,
+              dateClose: itemData.dateClose,
+              goal: itemData.goal,
+              current: itemData.current,
               id: item.id,
             }
           })
@@ -45,6 +54,33 @@ const FundingsHero = () => {
   useEffect(() => {
     getPools()
   }, [])
+
+  useEffect(() => {
+    setActiveArray(
+      poolsArray.filter((item) => isAvaiable(item.dateStart, item.dateEnd) == 0)
+    )
+    setPastArray(
+      poolsArray.filter(
+        (item) => isAvaiable(item.dateStart, item.dateEnd) == -1
+      )
+    )
+    setFutureArray(
+      poolsArray.filter((item) => isAvaiable(item.dateStart, item.dateEnd) == 1)
+    )
+  }, [poolsArray])
+
+  const isAvaiable = (dateStart: number, dateEnd: number) => {
+    const x = new Date()
+    const start = new Date(dateStart)
+    const end = new Date(dateEnd)
+    if (x > start && x < end) {
+      return 0
+    }
+    if (x < start) return -1
+    if (x > end) return 1
+  }
+
+  const classH2 = 'text-smallH2 md:text-bigH2 mt-8'
 
   return (
     <div className="flex flex-col justify-center align-middle">
@@ -62,7 +98,16 @@ const FundingsHero = () => {
       </div>
       {result ? (
         poolsArray.length > 0 ? (
-          <Pools poolsArray={poolsArray} />
+          <div className=" mx-auto flex w-[95%] flex-col">
+            <h2 className={classH2}>Active pools</h2>
+            <Pools poolsArray={activeArray} />
+            <h2 className={classH2}>Future pools</h2>
+            <Pools poolsArray={futureArray} />
+            <div className="opacity-70">
+              <h2 className={classH2}>Past pools</h2>
+              <Pools poolsArray={pastArray} />
+            </div>
+          </div>
         ) : (
           <p className="mx-auto mb-16 w-fit rounded-2xl border-2 border-brown px-8 py-4 text-center text-lg shadow-2xl">
             There are no fundings opened
