@@ -1,7 +1,7 @@
-import React from 'react'
-
-import Pool from '../../atoms/pool/pool'
 import { ItemPool } from '../fundingsHero/fundingsHero'
+import Pool from '../../atoms/pool/pool'
+import React from 'react'
+import { iteratorSymbol } from 'immer/dist/internal'
 
 interface PoolsProps {
   poolsArray: Array<ItemPool>
@@ -27,6 +27,8 @@ const Pools = ({ poolsArray, type }: PoolsProps) => {
                   dateClose={item.dateClose}
                   goal={item.goal}
                   current={item.current}
+                  appAddress={item.appAddress}
+                  appId={item.appId}
                   key={index}
                 />
               )

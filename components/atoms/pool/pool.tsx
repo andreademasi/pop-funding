@@ -1,6 +1,9 @@
-import React from 'react'
-import { useInView } from 'react-intersection-observer'
+import React, { useContext } from 'react'
+
+import { ConnectContext } from '../../../store/connector'
 import { MAX_TIMESTAMP } from '../../../utilities/constants/maxTimestamp'
+import { donate } from '../../../helpers/api'
+import { useInView } from 'react-intersection-observer'
 
 interface PoolProps {
   title: string
@@ -10,6 +13,8 @@ interface PoolProps {
   dateClose: number
   goal: number
   current: number
+  appId: number
+  appAddress: string
 }
 
 const Pool = ({
@@ -20,7 +25,11 @@ const Pool = ({
   dateClose,
   goal,
   current,
+  appId,
+  appAddress,
 }: PoolProps) => {
+  const connector = useContext(ConnectContext)
+
   const [ref, inView, _entry] = useInView({
     threshold: 0,
     fallbackInView: true,
@@ -44,6 +53,10 @@ const Pool = ({
         ? 'No end date'
         : x.toString().split('GMT')[0].slice(4)
     return y == 'lid Date' ? 'Invalid date' : y
+  }
+
+  const contribute = async () => {
+    await donate(appId, appAddress, connector, 1)
   }
 
   return (
@@ -80,6 +93,7 @@ const Pool = ({
             disabled={!isAvaiable()}
             style={isAvaiable() ? { opacity: 1 } : { opacity: 0.5 }}
             className="transition-scale mx-4 w-fit rounded-2xl bg-brown px-4 py-px text-center text-purple duration-100 hover:scale-105"
+            onClick={contribute}
           >
             Contribute
           </button>

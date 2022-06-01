@@ -1,4 +1,4 @@
-#pragma version 2
+#pragma version 6
 // Fund Start Date unixtimestamp
 // Fund End Date unixtimestamp
 // Fund Goal
@@ -201,16 +201,15 @@ bz failed
 global GroupSize
 int 2
 ==
-// second tx is an payment
+// second tx is a payment
 gtxn 1 TypeEnum
 int 1
 ==
 &&
 bz failed
-// verify escrow is receiving 
+// verify application is receiving 
 // second payment tx
-byte "Escrow"
-app_global_get
+global CurrentApplicationAddress
 gtxn 1 Receiver
 ==
 bz failed
@@ -230,11 +229,8 @@ int 0 //sender
 txn ApplicationID
 byte "MyAmountGiven"
 app_local_get_ex
-// check if a new giver
-// or existing giver
-// and store the value
+// store the value
 // in the givers local storage
-bz new_giver
 gtxn 1 Amount
 +
 store 3
@@ -243,52 +239,24 @@ byte "MyAmountGiven"
 load 3
 app_local_put
 b finished
-new_giver:
-int 0 //sender
-byte "MyAmountGiven"
-gtxn 1 Amount
-app_local_put
-b finished
-
 
 
 claim:
-// verify there are 2 transactions
-// in the group
-global GroupSize
-int 2
-==
-bz failed
 // verify that the receiver 
 // of the payment transaction
 // is the address stored 
 // when the fund was created
-gtxn 1 Receiver
-byte "Receiver"
+byte "Creator"
 app_global_get
+txn Sender
 ==
-// verify the sender
-// of the payment transaction
-// is the escrow account
-gtxn 1 Sender
-byte "Escrow"
-app_global_get
-==
-&&
-// verify that the CloseRemainderTo
-// attribute is set to the receiver
-gtxn 1 CloseRemainderTo 
-byte "Receiver"
-app_global_get
-==
-&&
+bz failed
 // verify that the fund end date 
 // has passed
 global LatestTimestamp
 byte "EndDate"
 app_global_get
 >
-&&
 bz failed
 // verify that the goal was reached
 byte "Total"
@@ -297,6 +265,14 @@ byte "Goal"
 app_global_get
 >=
 bz failed
+itxn_begin
+int pay
+itxn_field TypeEnum
+int 0
+itxn_field Amount
+txn Sender
+itxn_field CloseRemainderTo
+itxn_submit
 b finished
 //dont check amount because
 //escrow account may receiver 
