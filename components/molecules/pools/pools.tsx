@@ -6,9 +6,10 @@ import { ItemPool } from '../fundingsHero/fundingsHero'
 interface PoolsProps {
   poolsArray: Array<ItemPool>
   type: string
+  showPopUp: () => void
 }
 
-const Pools = ({ poolsArray, type }: PoolsProps) => {
+const Pools = ({ poolsArray, type, showPopUp }: PoolsProps) => {
   return (
     <div className="mx-4 flex flex-col justify-center align-middle">
       <div className="flex w-full flex-row flex-wrap justify-center align-middle">
@@ -28,6 +29,7 @@ const Pools = ({ poolsArray, type }: PoolsProps) => {
                   goal={item.goal}
                   current={item.current}
                   key={index}
+                  showPopUp={showPopUp}
                 />
               )
             })
