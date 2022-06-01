@@ -72,7 +72,11 @@ const FundingsHero = () => {
 
   useEffect(() => {
     setActiveArray(
-      poolsArray.filter((item) => isAvaiable(item.dateStart, item.dateEnd) == 0)
+      poolsArray.filter(
+        (item) =>
+          isAvaiable(item.dateStart, item.dateEnd) == 0 ||
+          isAvaiable(item.dateStart, item.dateClose) == 0
+      )
     )
     setPastArray(
       poolsArray.filter(
@@ -88,11 +92,12 @@ const FundingsHero = () => {
     const x = new Date()
     const start = new Date(dateStart)
     const end = new Date(dateEnd)
-    if (x > start && x < end) {
+    if (x >= start && x < end) {
       return 0
     }
-    if (x < start) return -1
-    if (x > end) return 1
+    if (x < start && x < end) return 1
+    if (x >= end && x > start) return -1
+    return null
   }
 
   const handleCreateClick = () => {
@@ -119,7 +124,7 @@ const FundingsHero = () => {
       {result ? (
         poolsArray.length > 0 ? (
           <div className=" mx-auto flex w-[95%] flex-col">
-            <h2 className={classH2}>Active pools</h2>
+            <h2 className={classH2}>Active fundings</h2>
             <Pools
               poolsArray={activeArray}
               type={'active'}
@@ -127,7 +132,7 @@ const FundingsHero = () => {
                 setPopUp(true)
               }}
             />
-            <h2 className={classH2}>Future pools</h2>
+            <h2 className={classH2}>Future fundings</h2>
             <Pools
               poolsArray={futureArray}
               type={'future'}
@@ -136,7 +141,7 @@ const FundingsHero = () => {
               }}
             />
             <div className="opacity-70">
-              <h2 className={classH2}>Past pools</h2>
+              <h2 className={classH2}>Past fundings</h2>
               <Pools
                 poolsArray={pastArray}
                 type={'past'}
