@@ -1,6 +1,5 @@
 import { addDoc, CollectionReference, DocumentData } from 'firebase/firestore'
 import React, { useEffect, useRef, useState } from 'react'
-import { MAX_TIMESTAMP } from '../../../utilities/constants/maxTimestamp'
 interface CreatePoolProps {
   dbInstance: CollectionReference<DocumentData>
   getPools: () => void
@@ -49,17 +48,18 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
 
     return `${year}${separator}${
       month < 10 ? `0${month}` : `${month}`
-    }${separator}${day}T${hour < 10 ? `0${hour}` : `${hour}`}:${
-      minutes < 10 ? `0${minutes}` : `${minutes}`
-    }`
+    }${separator}${day < 10 ? `0${day}` : `${day}`}T${
+      hour < 10 ? `0${hour}` : `${hour}`
+    }:${minutes < 10 ? `0${minutes}` : `${minutes}`}`
   }
 
   const resetEnd = () => {
     const x = new Date()
+    const y = new Date()
     x.setHours(x.getHours() + 1)
     setEndDate(x)
-    x.setHours(x.getHours() + 1)
-    setCloseDate(x)
+    y.setHours(y.getHours() + 2)
+    setCloseDate(y)
   }
 
   const handleNowClick = () => {
@@ -80,6 +80,10 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
       startDate.toISOString().slice(0, -7) < check.toISOString().slice(0, -7)
     )
       alert('Invalid start date, you cannot create a funding in the past')
+    else if (
+      endDate.toISOString().slice(0, -7) > closeDate.toISOString().slice(0, -7)
+    )
+      alert('Invalid close date, you cannot close a funding before its end')
     else if (goal == 0 || isNaN(goal)) alert('Please enter a goal')
     else {
       addPool(title, description)
