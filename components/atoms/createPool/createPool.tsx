@@ -2,7 +2,6 @@ import { CollectionReference, DocumentData, addDoc } from 'firebase/firestore'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 
 import { ConnectContext } from '../../../store/connector'
-import { MAX_TIMESTAMP } from '../../../utilities/constants/maxTimestamp'
 import { createPool } from '../../../helpers/api'
 
 interface CreatePoolProps {
@@ -22,7 +21,12 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
   const check = new Date()
   const connector = useContext(ConnectContext)
 
-  const addPool = (title: string, description: string) => {
+  const addPool = (
+    title: string,
+    description: string,
+    appId: number,
+    appAddress: string
+  ) => {
     addDoc(dbInstance, {
       title: title,
       description: description,
@@ -31,6 +35,8 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
       dateClose: Date.parse(closeDate.toString()),
       goal: goal,
       current: 0,
+      appId: appId,
+      appAddress: appAddress,
     }).then((response) => {
       if (response) {
         setTitle('')
@@ -92,9 +98,10 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
       alert('Invalid close date, you cannot close a funding before its end')
     else if (goal == 0 || isNaN(goal)) alert('Please enter a goal')
     else {
-      createPool(connector)
-      addPool(title, description)
-      setCreate(false)
+      createPool(connector).then(({ appId, appAddress }) => {
+        addPool(title, description, appId, appAddress)
+        setCreate(false)
+      })
     }
   }
 

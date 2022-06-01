@@ -1,10 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react'
+import { addDoc, collection, getDocs } from 'firebase/firestore'
+
 import CreatePool from '../../atoms/createPool/createPool'
 import Pools from '../pools/pools'
-import { addDoc, collection, getDocs } from 'firebase/firestore'
 import { database } from '../../../firebaseConfig'
+import { isOptedIn } from '../../../helpers/api'
 
 export interface ItemPool {
+  appAddress: string
+  appId: number
   title: string
   description: string
   dateStart: number
@@ -42,6 +46,8 @@ const FundingsHero = () => {
               goal: itemData.goal,
               current: itemData.current,
               id: item.id,
+              appAddress: itemData.appAddress,
+              appId: itemData.appId,
             }
           })
         )
@@ -59,7 +65,7 @@ const FundingsHero = () => {
   useEffect(() => {
     getPools()
   }, [])
-
+  isOptedIn()
   useEffect(() => {
     setActiveArray(
       poolsArray.filter((item) => isAvaiable(item.dateStart, item.dateEnd) == 0)
