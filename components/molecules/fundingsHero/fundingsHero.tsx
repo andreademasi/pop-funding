@@ -1,8 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import CreatePool from '../../atoms/createPool/createPool'
 import Pools from '../pools/pools'
 import { addDoc, collection, getDocs } from 'firebase/firestore'
 import { database } from '../../../firebaseConfig'
+import { ConnectContext } from '../../../store/connector'
+import PopUp from '../popUp/popUp'
 
 export interface ItemPool {
   title: string
@@ -23,6 +25,9 @@ const FundingsHero = () => {
   const [futureArray, setFutureArray] = useState<Array<ItemPool>>([])
   const [activeArray, setActiveArray] = useState<Array<ItemPool>>([])
   const [result, setResult] = useState<boolean>(true)
+  const [popUp, setPopUp] = useState<boolean>(false)
+
+  const connector = useContext(ConnectContext)
 
   const [state, setState] = useState<string>('Fetching from database')
 
@@ -85,6 +90,11 @@ const FundingsHero = () => {
     if (x > end) return 1
   }
 
+  const handleCreateClick = () => {
+    if (connector.connected) setCreate(true)
+    else setPopUp(true)
+  }
+
   const classH2 = 'text-smallH2 md:text-bigH2 mt-8 ml-8'
 
   return (
@@ -94,7 +104,7 @@ const FundingsHero = () => {
           Explore or{' '}
           <span
             className=" cursor-pointer leading-3 underline decoration-solid decoration-2 underline-offset-8 transition-[text-decoration-thickness] hover:decoration-4"
-            onClick={() => setCreate(true)}
+            onClick={handleCreateClick}
           >
             create
           </span>{' '}
@@ -105,12 +115,30 @@ const FundingsHero = () => {
         poolsArray.length > 0 ? (
           <div className=" mx-auto flex w-[95%] flex-col">
             <h2 className={classH2}>Active pools</h2>
-            <Pools poolsArray={activeArray} type={'active'} />
+            <Pools
+              poolsArray={activeArray}
+              type={'active'}
+              showPopUp={() => {
+                setPopUp(true)
+              }}
+            />
             <h2 className={classH2}>Future pools</h2>
-            <Pools poolsArray={futureArray} type={'future'} />
+            <Pools
+              poolsArray={futureArray}
+              type={'future'}
+              showPopUp={() => {
+                setPopUp(true)
+              }}
+            />
             <div className="opacity-70">
               <h2 className={classH2}>Past pools</h2>
-              <Pools poolsArray={pastArray} type={'past'} />
+              <Pools
+                poolsArray={pastArray}
+                type={'past'}
+                showPopUp={() => {
+                  setPopUp(true)
+                }}
+              />
             </div>
           </div>
         ) : (
@@ -125,7 +153,7 @@ const FundingsHero = () => {
       )}
       <button
         className=" z-10 mx-auto mt-20 flex w-fit flex-col rounded-2xl bg-brown px-8 py-px text-smallA text-purple transition-transform hover:scale-105 md:text-bigA"
-        onClick={() => setCreate(true)}
+        onClick={handleCreateClick}
       >
         <h2 className="text-smallH2 md:text-bigH2">Create funding</h2>
       </button>
@@ -146,6 +174,19 @@ const FundingsHero = () => {
           setCreate={setCreate}
         />
       </div>
+      {popUp ? (
+        <PopUp>
+          <p>You have to connect a wallet first</p>
+          <button
+            className="transition-scale mx-4 mt-8 w-fit rounded-2xl bg-brown px-4 py-px text-center text-purple duration-100 hover:scale-105"
+            onClick={() => setPopUp(false)}
+          >
+            Ok
+          </button>
+        </PopUp>
+      ) : (
+        <></>
+      )}
     </div>
   )
 }

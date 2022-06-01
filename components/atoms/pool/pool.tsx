@@ -1,6 +1,8 @@
-import React from 'react'
+import React, { useContext, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
+import { ConnectContext } from '../../../store/connector'
 import { MAX_TIMESTAMP } from '../../../utilities/constants/maxTimestamp'
+import PopUp from '../../molecules/popUp/popUp'
 
 interface PoolProps {
   title: string
@@ -10,6 +12,7 @@ interface PoolProps {
   dateClose: number
   goal: number
   current: number
+  showPopUp: () => void
 }
 
 const Pool = ({
@@ -20,12 +23,14 @@ const Pool = ({
   dateClose,
   goal,
   current,
+  showPopUp,
 }: PoolProps) => {
   const [ref, inView, _entry] = useInView({
     threshold: 0,
     fallbackInView: true,
     rootMargin: '-10% 0px -10% 0px',
   })
+  const connector = useContext(ConnectContext)
 
   const isAvaiable = () => {
     const x = new Date()
@@ -44,6 +49,11 @@ const Pool = ({
         ? 'No end date'
         : x.toString().split('GMT')[0].slice(4)
     return y == 'lid Date' ? 'Invalid date' : y
+  }
+
+  const handleContributeClick = () => {
+    if (connector.connected) {
+    } else showPopUp()
   }
 
   return (
@@ -80,6 +90,7 @@ const Pool = ({
             disabled={!isAvaiable()}
             style={isAvaiable() ? { opacity: 1 } : { opacity: 0.5 }}
             className="transition-scale mx-4 w-fit rounded-2xl bg-brown px-4 py-px text-center text-purple duration-100 hover:scale-105"
+            onClick={handleContributeClick}
           >
             Contribute
           </button>
