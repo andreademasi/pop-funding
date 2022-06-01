@@ -1,12 +1,15 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
+import { collection, getDocs } from 'firebase/firestore'
+
+import { ConnectContext } from '../../../store/connector'
 import CreatePool from '../../atoms/createPool/createPool'
 import Pools from '../pools/pools'
-import { addDoc, collection, getDocs } from 'firebase/firestore'
-import { database } from '../../../firebaseConfig'
-import { ConnectContext } from '../../../store/connector'
 import PopUp from '../popUp/popUp'
+import { database } from '../../../firebaseConfig'
 
 export interface ItemPool {
+  appAddress: string
+  appId: number
   title: string
   description: string
   dateStart: number
@@ -47,6 +50,8 @@ const FundingsHero = () => {
               goal: itemData.goal,
               current: itemData.current,
               id: item.id,
+              appAddress: itemData.appAddress,
+              appId: itemData.appId,
             }
           })
         )
