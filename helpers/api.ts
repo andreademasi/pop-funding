@@ -107,9 +107,8 @@ export const test = async (connector: WalletConnect) => {
       ? 'BQGP3DFDUD2I7K2BP2J4RHELTC3ZMAIPX7W3S742GT4USEQPVRKSP7NQOE'
       : connector.accounts[0]
 
-  const params = await client.getTransactionParams().do()
   const { appId, appAddress } = await createPool(connector)
-  await optIn(sender, params, appId, connector)
+  await optIn(sender, appId, connector)
   console.log('Donating')
   await donate(appId, appAddress, connector)
   setTimeout(async () => {
@@ -211,12 +210,12 @@ const sendCustomSignedTxns = async (
   return await client.pendingTransactionInformation(tx.txId).do()
 }
 
-async function optIn(
+export async function optIn(
   sender: string,
-  params: algosdk.SuggestedParams,
   appId: number,
   connector: WalletConnect
 ) {
+  const params = await client.getTransactionParams().do()
   const app_optin = algosdk.makeApplicationOptInTxn(sender, params, appId)
   console.log('Opting in')
   await sendCustomSignedTxns([app_optin], connector)
@@ -243,9 +242,8 @@ export const isOptedIn = async (
   address: string = 'BQGP3DFDUD2I7K2BP2J4RHELTC3ZMAIPX7W3S742GT4USEQPVRKSP7NQOE',
   id: number
 ) => {
-  const accountInfo = (await indexer
-    .lookupAccountByID(address)
-    .do()) as IndexerResponse
+  const accountInfo = (await indexer.lookupAccountByID(address).do())
+    .account as IndexerResponse
   return accountInfo['apps-local-state'].find((app) => app.id === id) ?? false
 }
 
