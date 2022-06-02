@@ -1,6 +1,6 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import PopUp from '../../molecules/popUp/popUp'
-import { donate } from '../../../helpers/api'
+import { donate, isOptedIn, optIn } from '../../../helpers/api'
 import { ConnectContext } from '../../../store/connector'
 
 interface ContributeProps {
@@ -24,8 +24,22 @@ const Contribute = ({
   const [optedIn, setOptedIn] = useState<boolean>(false)
   const [amount, setAmount] = useState<number>(0)
 
+  const sender = connector.accounts[0]
+
+  const checkOpt = async () => {
+    const opted = await isOptedIn(sender, appId)
+    if (opted) setOptedIn(true)
+    else setOptedIn(false)
+  }
+
+  useEffect(() => {
+    checkOpt()
+  }, [])
+
   const handleOptInClick = () => {
-    setOptedIn(true)
+    optIn(sender, appId, connector).then(() => {
+      setOptedIn(true)
+    })
   }
 
   const handleDonateClick = () => {
