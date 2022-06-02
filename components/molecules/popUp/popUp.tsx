@@ -6,8 +6,10 @@ interface PopUpProps {
 
 const PopUp = ({ children }: PopUpProps) => {
   return (
-    <div className="m-100% fixed top-1/2 left-1/2 z-50 flex max-h-full w-[80%] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center overflow-x-hidden overflow-y-scroll rounded-2xl bg-purple p-8 shadow-[0_0px_50px_50rem_#000000b0] md:w-fit">
-      {children}
+    <div className="fixed top-0 z-10 flex h-full w-full items-center justify-center bg-[#000000de]">
+      <div className="relative z-50 flex h-fit max-h-[95%] w-fit flex-col items-center justify-center overflow-x-hidden overflow-y-scroll rounded-2xl bg-purple p-8 ">
+        {children}
+      </div>
     </div>
   )
 }

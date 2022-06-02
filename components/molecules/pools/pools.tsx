@@ -6,7 +6,7 @@ import { iteratorSymbol } from 'immer/dist/internal'
 interface PoolsProps {
   poolsArray: Array<ItemPool>
   type: string
-  showPopUp: () => void
+  showPopUp: (children?: React.ReactNode) => void
 }
 
 const Pools = ({ poolsArray, type, showPopUp }: PoolsProps) => {

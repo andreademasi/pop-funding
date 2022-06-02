@@ -1,6 +1,6 @@
-import Image from 'next/image'
+// import Image from 'next/image'
 import React, { useState } from 'react'
-import chain from '../../../public/chain.svg'
+// import chain from '../../../public/chain.svg'
 
 interface BubbleProps {
   dimensions?: number
@@ -57,13 +57,13 @@ const Bubble = ({ dimensions = 200, right = 10 }: BubbleProps) => {
         }}
         className={` flex justify-center rounded-full bg-radial  shadow-radial transition-[opacity_transform] duration-100`}
       >
-        <Image
+        {/* <Image
           src={chain}
           width={dimensions * 0.8}
           height={dimensions * 0.8}
           className={'-z-10 opacity-10'}
           alt="chain"
-        />
+        /> */}
       </div>
     </div>
   )

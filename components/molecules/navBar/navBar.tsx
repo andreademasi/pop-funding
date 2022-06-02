@@ -106,7 +106,7 @@ const NavBar = () => {
   const nativeCurrency = assets.find((asset: IAssetData) => asset.id === 0)!
 
   return (
-    <nav className="absolute top-0 my-5 flex w-full flex-row justify-evenly align-middle  ">
+    <nav className="absolute top-0 my-5 mx-4 flex w-full flex-row flex-wrap justify-evenly gap-4 align-middle ">
       {items.map((item, index) => (
         <span
           key={index}
@@ -120,6 +120,8 @@ const NavBar = () => {
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 100 100"
+            width={25}
+            height={25}
             preserveAspectRatio="xMidYMid"
           >
             <circle
