@@ -37,7 +37,7 @@ const Pools = ({ poolsArray, type, showPopUp }: PoolsProps) => {
             })
         ) : (
           <p className="mx-auto mb-16 w-fit rounded-2xl border-2 border-brown px-8 py-4 text-center text-lg shadow-2xl">
-            There are no {type} pools
+            There are no {type} fundings
           </p>
         )}
       </div>
