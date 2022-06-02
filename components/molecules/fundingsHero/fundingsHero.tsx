@@ -62,7 +62,7 @@ const FundingsHero = () => {
         setResult(false)
       })
       .finally(() => {
-        setState('There are no pools')
+        setState('There are no fundings')
       })
   }, [dbInstance])
 
