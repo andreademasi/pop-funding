@@ -123,7 +123,7 @@ const FundingsHero = () => {
       </div>
       {result ? (
         poolsArray.length > 0 ? (
-          <div className=" mx-auto flex w-[95%] flex-col">
+          <div className=" mx-auto flex w-full flex-col">
             <h2 className={classH2}>Active fundings</h2>
             <Pools
               poolsArray={activeArray}
