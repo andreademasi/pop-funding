@@ -1,15 +1,15 @@
 import { ItemPool } from '../fundingsHero/fundingsHero'
 import Pool from '../../atoms/pool/pool'
 import React from 'react'
-import { iteratorSymbol } from 'immer/dist/internal'
 
 interface PoolsProps {
   poolsArray: Array<ItemPool>
   type: string
+  getPools: () => void
   showPopUp: (children?: React.ReactNode) => void
 }
 
-const Pools = ({ poolsArray, type, showPopUp }: PoolsProps) => {
+const Pools = ({ poolsArray, type, showPopUp, getPools }: PoolsProps) => {
   return (
     <div className="mx-4 flex flex-col justify-center align-middle">
       <div className="flex w-full flex-row flex-wrap justify-center align-middle">
@@ -31,7 +31,9 @@ const Pools = ({ poolsArray, type, showPopUp }: PoolsProps) => {
                   appAddress={item.appAddress}
                   appId={item.appId}
                   key={index}
+                  firestoreId={item.firestoreId}
                   showPopUp={showPopUp}
+                  getPools={getPools}
                 />
               )
             })

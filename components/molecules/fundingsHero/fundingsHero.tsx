@@ -17,7 +17,7 @@ export interface ItemPool {
   dateClose: number
   goal: number
   current: number
-  id: string
+  firestoreId: string
 }
 
 const FundingsHero = () => {
@@ -49,7 +49,7 @@ const FundingsHero = () => {
               dateClose: itemData.dateClose,
               goal: itemData.goal,
               current: itemData.current,
-              id: item.id,
+              firestoreId: item.id,
               appAddress: itemData.appAddress,
               appId: itemData.appId,
             }
@@ -131,6 +131,7 @@ const FundingsHero = () => {
               showPopUp={() => {
                 setPopUp(true)
               }}
+              getPools={getPools}
             />
             <h2 className={classH2}>Future fundings</h2>
             <Pools
@@ -139,6 +140,7 @@ const FundingsHero = () => {
               showPopUp={() => {
                 setPopUp(true)
               }}
+              getPools={getPools}
             />
             <div className="opacity-70">
               <h2 className={classH2}>Past fundings</h2>
@@ -148,6 +150,7 @@ const FundingsHero = () => {
                 showPopUp={() => {
                   setPopUp(true)
                 }}
+                getPools={getPools}
               />
             </div>
           </div>
