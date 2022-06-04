@@ -5,7 +5,7 @@ import { MAX_TIMESTAMP } from '../../../utilities/constants/maxTimestamp'
 import { useInView } from 'react-intersection-observer'
 import Contribute from '../contribute/contribute'
 import { ItemPool } from '../../molecules/fundingsHero/fundingsHero'
-import { collection, doc, updateDoc } from 'firebase/firestore'
+import { collection, doc, increment, updateDoc } from 'firebase/firestore'
 import { database } from '../../../firebaseConfig'
 
 interface PoolProps extends ItemPool {
@@ -65,7 +65,7 @@ const Pool = ({
 
   const onTransactionSuccess = async (value: number) => {
     await updateDoc(poolRef, {
-      current: current + value,
+      current: increment(value),
     }).then(() => {
       getPools()
     })
