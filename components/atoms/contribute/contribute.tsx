@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import PopUp from '../../molecules/popUp/popUp'
 import { donate, isOptedIn, optIn } from '../../../helpers/api'
 import { ConnectContext } from '../../../store/connector'
+import Loader from '../loader/loader'
 
 interface ContributeProps {
   title: string
@@ -10,6 +11,7 @@ interface ContributeProps {
   appId: number
   appAddress: string
   close: () => void
+  onTransactionSuccess: (value: number) => void
 }
 
 const Contribute = ({
@@ -19,15 +21,19 @@ const Contribute = ({
   appId,
   appAddress,
   close,
+  onTransactionSuccess,
 }: ContributeProps) => {
   const connector = useContext(ConnectContext)
   const [optedIn, setOptedIn] = useState<boolean>(false)
   const [amount, setAmount] = useState<number>(0)
+  const [loading, setLoading] = useState<boolean>(false)
 
   const sender = connector.accounts[0]
 
   const checkOpt = async () => {
+    setLoading(true)
     const opted = await isOptedIn(sender, appId)
+    setLoading(false)
     if (opted) setOptedIn(true)
     else setOptedIn(false)
   }
@@ -37,14 +43,20 @@ const Contribute = ({
   }, [])
 
   const handleOptInClick = () => {
+    setLoading(true)
     optIn(sender, appId, connector).then(() => {
       setOptedIn(true)
+      setLoading(false)
     })
   }
 
   const handleDonateClick = () => {
-    donate(appId, appAddress, connector, amount)
-    close()
+    setLoading(true)
+    donate(appId, appAddress, connector, amount).then(() => {
+      onTransactionSuccess(amount)
+      close()
+      setLoading(false)
+    })
   }
 
   return (
@@ -74,7 +86,14 @@ const Contribute = ({
             <strong>Goal:</strong> {goal}
           </p>
         </div>
-        {optedIn ? (
+        {loading ? (
+          <>
+            <button className="mx-auto mt-4 flex items-center justify-center rounded-2xl bg-brown px-4 py-2 text-purple transition-transform hover:scale-105 md:w-1/2">
+              <Loader stroke="purple" />
+            </button>
+            <p className="mt-4">Confirm on your wallet</p>
+          </>
+        ) : optedIn ? (
           <>
             <p>Choose the amount </p>
             <span className="relative flex items-center justify-center">

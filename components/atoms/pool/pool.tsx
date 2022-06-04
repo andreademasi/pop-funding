@@ -4,18 +4,13 @@ import { ConnectContext } from '../../../store/connector'
 import { MAX_TIMESTAMP } from '../../../utilities/constants/maxTimestamp'
 import { useInView } from 'react-intersection-observer'
 import Contribute from '../contribute/contribute'
+import { ItemPool } from '../../molecules/fundingsHero/fundingsHero'
+import { collection, doc, updateDoc } from 'firebase/firestore'
+import { database } from '../../../firebaseConfig'
 
-interface PoolProps {
-  title: string
-  description: string
-  dateStart: number
-  dateEnd: number
-  dateClose: number
-  goal: number
-  current: number
+interface PoolProps extends ItemPool {
   showPopUp: () => void
-  appId: number
-  appAddress: string
+  getPools: () => void
 }
 
 const Pool = ({
@@ -27,11 +22,15 @@ const Pool = ({
   goal,
   current,
   showPopUp,
+  getPools,
   appId,
   appAddress,
+  firestoreId,
 }: PoolProps) => {
   const connector = useContext(ConnectContext)
   const [contribute, setContribute] = useState<boolean>(false)
+  const dbInstance = collection(database, 'active-pools')
+  const poolRef = doc(dbInstance, firestoreId)
 
   const [ref, inView, _entry] = useInView({
     threshold: 0,
@@ -62,6 +61,14 @@ const Pool = ({
     if (connector.connected) {
       setContribute(true)
     } else showPopUp()
+  }
+
+  const onTransactionSuccess = async (value: number) => {
+    await updateDoc(poolRef, {
+      current: current + value,
+    }).then(() => {
+      getPools()
+    })
   }
 
   return (
@@ -108,10 +115,10 @@ const Pool = ({
           )}
         </div>
         <div className="mt-8 mb-2 flex flex-row items-center justify-between">
-          <p className="mx-2 flex w-fit flex-row flex-wrap rounded-xl bg-transparentWhite px-2 py-1 text-sm opacity-70">
+          <p className="mx-2 flex w-fit flex-row flex-wrap gap-1 rounded-xl bg-transparentWhite px-2 py-1 text-sm opacity-70">
             <span>End:</span> <span>{dateConverter(dateEnd)}</span>
           </p>
-          <p className="mx-2 flex w-fit flex-row flex-wrap rounded-xl bg-transparentWhite px-2 py-1 text-sm opacity-70">
+          <p className="mx-2 flex w-fit flex-row flex-wrap gap-1 rounded-xl bg-transparentWhite px-2 py-1 text-sm opacity-70">
             <span>Close:</span> <span>{dateConverter(dateClose)}</span>
           </p>
         </div>
@@ -124,6 +131,7 @@ const Pool = ({
           appId={appId}
           appAddress={appAddress}
           close={() => setContribute(false)}
+          onTransactionSuccess={onTransactionSuccess}
         />
       ) : (
         <></>

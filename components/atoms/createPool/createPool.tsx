@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import { ConnectContext } from '../../../store/connector'
 import PopUp from '../../molecules/popUp/popUp'
 import { createPool } from '../../../helpers/api'
+import Loader from '../loader/loader'
 
 interface CreatePoolProps {
   dbInstance: CollectionReference<DocumentData>
@@ -18,6 +19,7 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
   const [endDate, setEndDate] = useState<Date>(new Date())
   const [closeDate, setCloseDate] = useState<Date>(new Date())
   const [goal, setGoal] = useState<number>(0)
+  const [loading, setLoading] = useState<boolean>(false)
 
   const check = new Date()
   const connector = useContext(ConnectContext)
@@ -99,10 +101,12 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
       alert('Invalid close date, you cannot close a funding before its end')
     else if (goal == 0 || isNaN(goal)) alert('Please enter a goal')
     else {
+      setLoading(true)
       createPool(connector, startDate, endDate, closeDate, goal).then(
         ({ appId, appAddress }) => {
           addPool(title, description, appId, appAddress)
           setCreate(false)
+          setLoading(false)
         }
       )
     }
@@ -236,16 +240,29 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
           <p className="absolute right-8 top-4 opacity-50 ">Algo</p>
         </span>
       </span>
-      <button
-        style={notGoodFields() ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
-        className="mx-auto mt-4 rounded-2xl bg-brown px-4 py-2 text-purple transition-transform hover:scale-105 md:w-1/2"
-        onClick={handleCreateClick}
-      >
-        Create
-      </button>
-      <p className="text-red mt-2 text-center opacity-50">
-        All fields are required
-      </p>
+      {loading ? (
+        <>
+          <button className="mx-auto mt-4 flex items-center justify-center rounded-2xl bg-brown px-4 py-2 text-purple transition-transform hover:scale-105 md:w-1/2">
+            <Loader stroke="purple" />
+          </button>
+          <p className="mt-4">Confirm on your wallet</p>
+        </>
+      ) : (
+        <>
+          <button
+            style={
+              notGoodFields() ? { opacity: 0.5, cursor: 'not-allowed' } : {}
+            }
+            className="mx-auto mt-4 rounded-2xl bg-brown px-4 py-2 text-purple transition-transform hover:scale-105 md:w-1/2"
+            onClick={handleCreateClick}
+          >
+            Create
+          </button>
+          <p className="text-red mt-2 text-center opacity-50">
+            All fields are required
+          </p>
+        </>
+      )}
     </PopUp>
   )
 }

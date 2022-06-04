@@ -1,23 +1,20 @@
 import React, { useContext, useEffect } from 'react'
-import {
-  ellipseAddress,
-  formatBigNumWithDecimals,
-} from '../../../helpers/utilities'
+import { ellipseAddress, formatBigNumWithDecimals } from './utilities'
 import {
   getAccountAssets,
   onSessionUpdate,
   reset,
   selectAssets,
-} from '../../../features/walletConnectSlice'
-import { useAppDispatch, useAppSelector } from '../../../store/hooks'
+} from '../features/walletConnectSlice'
+import { useAppDispatch, useAppSelector } from '../store/hooks'
 
-import { ConnectContext } from '../../../store/connector'
-import { IAssetData } from '../../../helpers/types'
+import { ConnectContext } from '../store/connector'
+import { IAssetData } from './types'
 import Link from 'next/link'
 import QRCodeModal from 'algorand-walletconnect-qrcode-modal'
-import { setIsModalOpen } from '../../../features/applicationSlice'
+import { setIsModalOpen } from '../features/applicationSlice'
 import { useSelector } from 'react-redux'
-import Loader from '../../atoms/loader/loader'
+import Loader from '../components/atoms/loader/loader'
 
 const items = [
   {
