@@ -46,6 +46,7 @@ const indexer =
   client === devNetClient
     ? new algosdk.Indexer('', 'http://localhost', 8980)
     : new algosdk.Indexer('', 'https://testnet-idx.algonode.cloud', '')
+
 export const createPool = async (
   connector: WalletConnect,
   bd: Date = new Date(),
@@ -159,17 +160,13 @@ const sendDevSignedTxns = async (txns: algosdk.Transaction[]) => {
   const signedTxns = txns.map((txn) => {
     return txn.signTxn(algosdk.mnemonicToSecretKey(mn).sk)
   })
+
   const decodedsignedtxn = signedTxns.map((txn) =>
     algosdk.decodeSignedTransaction(txn)
   )
 
-  const dump = await createDryrun({
-    client,
-    txns: decodedsignedtxn,
-    latestTimestamp: Math.floor(new Date().getTime() / 1000),
-    round: 12,
-  })
-  console.log(JSON.stringify(dump.get_obj_for_encoding()))
+  await dumpTxnToConsole(decodedsignedtxn)
+
   const tx = await client.sendRawTransaction(signedTxns).do()
   await algosdk.waitForConfirmation(client, tx.txId, 4)
   return await client.pendingTransactionInformation(tx.txId).do()
@@ -205,9 +202,36 @@ const sendCustomSignedTxns = async (
     }
   )
 
+  await dumpTxnToConsole(decodedResult)
+
   const tx = await client.sendRawTransaction(decodedResult).do()
   await algosdk.waitForConfirmation(client, tx.txId, 2)
   return await client.pendingTransactionInformation(tx.txId).do()
+}
+
+const isSignedTxns = (
+  txns: Array<Uint8Array | algosdk.SignedTransaction>
+): txns is algosdk.SignedTransaction[] => {
+  return (txns[0] as algosdk.SignedTransaction).txn !== undefined
+}
+
+async function dumpTxnToConsole(
+  txns: Array<Uint8Array | algosdk.SignedTransaction>
+) {
+  let decodedTxn
+  if (isSignedTxns(txns)) decodedTxn = txns
+  else
+    decodedTxn = txns.map((t) => {
+      return algosdk.decodeSignedTransaction(t as Uint8Array)
+    })
+
+  const dump = await createDryrun({
+    client,
+    txns: decodedTxn,
+    latestTimestamp: Math.floor(new Date().getTime() / 1000),
+    round: 12,
+  })
+  console.log(JSON.stringify(dump.get_obj_for_encoding()))
 }
 
 export async function optIn(

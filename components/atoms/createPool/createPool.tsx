@@ -99,10 +99,12 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
       alert('Invalid close date, you cannot close a funding before its end')
     else if (goal == 0 || isNaN(goal)) alert('Please enter a goal')
     else {
-      createPool(connector).then(({ appId, appAddress }) => {
-        addPool(title, description, appId, appAddress)
-        setCreate(false)
-      })
+      createPool(connector, startDate, endDate, closeDate, goal).then(
+        ({ appId, appAddress }) => {
+          addPool(title, description, appId, appAddress)
+          setCreate(false)
+        }
+      )
     }
   }
 
