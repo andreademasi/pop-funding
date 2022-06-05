@@ -3,7 +3,6 @@
 // Fund End Date unixtimestamp
 // Fund Goal
 // Fund Amount - total
-// Escrow Address
 // Creator Address
 
 // check if the app is being created
@@ -53,8 +52,6 @@ txn OnCompletion
 ==
 bz not_deletion
 // To delete the app
-// The creator must empty the escrow
-// to the fund receiver if the escrow has funds
 // only the creator
 // can delete the app
 byte "Creator"
@@ -286,25 +283,14 @@ b finished
 //without a closeto
 // only 1 relcaim tx is allowed per account
 reclaim:
-// verify there are 2 transactions
-// in the group
-global GroupSize
-int 2
-==
-bz failed
 // verfiy that smart contract
 // caller is the payment
 // transction receiver
-gtxn 1 Receiver
-gtxn 0 Sender
-==
-// Verify that payment
-// transaction is from the escrow
-gtxn 1 Sender
-byte "Escrow"
-app_global_get
-==
-&&
+int 0
+int 0
+byte "MyAmountGiven"
+app_local_get
+<
 // verify that fund end date has passed
 global LatestTimestamp
 byte "EndDate"
@@ -319,22 +305,6 @@ byte "Goal"
 app_global_get
 <
 &&
-// because the escrow
-// has to pay the fee
-// the amount of the 
-// payment transaction
-// plus the fee should
-// be less than or equal to
-// the amount originally 
-// given
-gtxn 1 Amount
-gtxn 1 Fee
-+
-int 0
-byte "MyAmountGiven"
-app_local_get
-<=
-&&
 bz failed
 //check the escrow account total
 //--app-account for the escrow
@@ -344,26 +314,37 @@ bz failed
 // last recoverd donation
 // if it is the closeremainderto
 // should be set
-gtxn 1 Fee
-gtxn 1 Amount
-+
-// the int 1 is the ref to escrow
-int 1
-balance
-==
-gtxn 1 CloseRemainderTo 
+itxn_begin
+int pay
+itxn_field TypeEnum
+int 0
+byte "MyAmountGiven"
+app_local_get
+txn Fee
+-
+itxn_field Amount
+txn Sender
+itxn_field Receiver
+
+
+
+byte "Total"
+app_global_get
+int 0
+byte "MyAmountGiven"
+app_local_get
+<=
+bz finish_reclaim
 global ZeroAddress
-==
-||
-bz failed
+itxn_field CloseRemainderTo
+finish_reclaim:
+itxn_submit
 // decrement the given amount
 // of the sender
 int 0
 byte "MyAmountGiven"
 app_local_get
-gtxn 1 Amount
--
-gtxn 1 Fee
+txn Fee
 -
 store 5
 int 0

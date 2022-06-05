@@ -50,7 +50,7 @@ const indexer =
 export const createPool = async (
   connector: WalletConnect,
   bd: Date = new Date(),
-  ed: Date = new Date(bd.getTime() + 30000),
+  ed: Date = new Date(bd.getTime() + 40000),
   cd: Date = new Date(ed.getTime() + 30000),
   goal: number = 1
 ) => {
@@ -85,7 +85,7 @@ export const createPool = async (
   const txns = [txn]
   console.log('Creating')
   const transactionResponse = await sendCustomSignedTxns(txns, connector)
-
+  //const transactionResponse = await sendDevSignedTxns(txns, sender)
   const id = transactionResponse['application-index'] as number
 
   console.log(id)
@@ -107,14 +107,25 @@ export const test = async (connector: WalletConnect) => {
     client === devNetClient
       ? 'BQGP3DFDUD2I7K2BP2J4RHELTC3ZMAIPX7W3S742GT4USEQPVRKSP7NQOE'
       : connector.accounts[0]
+  const sender2 = 'FYUVMWRFIO3ID5WDDBLDYY7Y7WVNPAAUP6NQLYVLSR5SZMU7FOYVSVJ3OM'
+  const sender3 = '46QGOIFGCDNYU7WCMPQSF7Z2SFBPN2GIBNREJQ4YYLY76U2OMHALFP3LNM'
 
-  const { appId, appAddress } = await createPool(connector)
-  await optIn(sender, appId, connector)
-  console.log('Donating')
-  await donate(appId, appAddress, connector)
+  const { appId, appAddress } = await createPool(
+    connector,
+    new Date(),
+    undefined,
+    new Date(2022, 9, 1),
+    30
+  )
+  await optIn(sender2, appId, connector)
+  await optIn(sender3, appId, connector)
+
+  await donate(appId, appAddress, connector, 10, sender2)
+  await donate(appId, appAddress, connector, 10, sender3)
+
   setTimeout(async () => {
-    console.log('Claiming')
-    await claim(sender, appId, connector)
+    console.log('reclaiming')
+    await reclaim(sender2, appId, connector)
   }, 30000)
 }
 
@@ -122,16 +133,19 @@ export const donate = async (
   app_id: number,
   app_address: string,
   connector: WalletConnect,
-  amount: number = 1
+  amount: number = 1,
+  sender?: string
 ) => {
   console.log('Donating')
   const params = await client.getTransactionParams().do()
   const onComplete = algosdk.OnApplicationComplete.NoOpOC
-  const sender =
-    client === devNetClient
-      ? 'BQGP3DFDUD2I7K2BP2J4RHELTC3ZMAIPX7W3S742GT4USEQPVRKSP7NQOE'
-      : connector.accounts[0]
+  if (sender === undefined)
+    sender =
+      client === devNetClient
+        ? 'BQGP3DFDUD2I7K2BP2J4RHELTC3ZMAIPX7W3S742GT4USEQPVRKSP7NQOE'
+        : connector.accounts[0]
   let appArgs = []
+  console.log('SENDER: ', sender)
   appArgs.push(new Uint8Array(Buffer.from('donate')))
   const txn_call = algosdk.makeApplicationCallTxnFromObject({
     from: sender,
@@ -150,13 +164,29 @@ export const donate = async (
   )
   const txns = [txn_call, txn_donate]
   const txgroup = algosdk.assignGroupID(txns)
+  //console.log(await sendDevSignedTxns(txgroup, sender))
   console.log(await sendCustomSignedTxns(txgroup, connector))
 }
 
-const sendDevSignedTxns = async (txns: algosdk.Transaction[]) => {
-  const mn =
-    'short choose mystery replace luggage crouch myth matrix unique real funny strike board guard tiger eager flip recipe tag submit student enter document about skin'
+const sendDevSignedTxns = async (
+  txns: algosdk.Transaction[],
+  sender?: string
+) => {
+  let mn: string
 
+  if (sender === 'FYUVMWRFIO3ID5WDDBLDYY7Y7WVNPAAUP6NQLYVLSR5SZMU7FOYVSVJ3OM') {
+    mn =
+      'bread sugar fire appear change stairs engine engage awesome sing outside fault moon remember twelve toward exact raise pluck tilt lobster hawk cause absorb cousin'
+  } else if (
+    sender === '46QGOIFGCDNYU7WCMPQSF7Z2SFBPN2GIBNREJQ4YYLY76U2OMHALFP3LNM'
+  ) {
+    mn =
+      'shy bid remain monitor into pause doll outdoor neck ensure imitate sponsor spring fade secret stairs run gift dynamic audit disease square decorate abstract public'
+  } else
+    mn =
+      'short choose mystery replace luggage crouch myth matrix unique real funny strike board guard tiger eager flip recipe tag submit student enter document about skin'
+
+  console.log(mn)
   const signedTxns = txns.map((txn) => {
     return txn.signTxn(algosdk.mnemonicToSecretKey(mn).sk)
   })
@@ -243,9 +273,14 @@ export async function optIn(
   const app_optin = algosdk.makeApplicationOptInTxn(sender, params, appId)
   console.log('Opting in')
   await sendCustomSignedTxns([app_optin], connector)
+  //await sendDevSignedTxns([app_optin], sender)
 }
 
-async function claim(sender: string, id: number, connector: WalletConnect) {
+export async function claim(
+  sender: string,
+  id: number,
+  connector: WalletConnect
+) {
   console.log('claiming')
   const params = await client.getTransactionParams().do()
   const onComplete = algosdk.OnApplicationComplete.NoOpOC
@@ -259,6 +294,28 @@ async function claim(sender: string, id: number, connector: WalletConnect) {
     suggestedParams: params,
     onComplete: onComplete,
   })
+  console.log(await sendCustomSignedTxns([txn], connector))
+}
+
+export async function reclaim(
+  sender: string,
+  id: number,
+  connector: WalletConnect
+) {
+  console.log('claiming')
+  const params = await client.getTransactionParams().do()
+  const onComplete = algosdk.OnApplicationComplete.NoOpOC
+
+  let appArgs = []
+  appArgs.push(new Uint8Array(Buffer.from('reclaim')))
+  const txn = algosdk.makeApplicationCallTxnFromObject({
+    from: sender,
+    appIndex: id,
+    appArgs: appArgs,
+    suggestedParams: params,
+    onComplete: onComplete,
+  })
+  //console.log(await sendDevSignedTxns([txn], sender))
   console.log(await sendCustomSignedTxns([txn], connector))
 }
 
