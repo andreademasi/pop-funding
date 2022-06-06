@@ -8,6 +8,10 @@ const Home: NextPage = () => {
     <div className="flex min-h-screen flex-col items-center justify-center py-2">
       <Head>
         <title>PoP! Funding</title>
+        <meta
+          name="description"
+          content="PoP! Funding is a crowdfunding platform based on Algorand Blockchain. Everyone with a wallet can create or contribute to a funding"
+        />
         <link rel="icon" href="/favicon.ico" />
         {/* <link rel="manifest" href="/manifest.json" /> */}
         {/* <meta name="theme-color" content="#dfb59c" /> */}
