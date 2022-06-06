@@ -100,18 +100,31 @@ const Contribute = ({
               <input
                 type="number"
                 step={10}
-                value={amount}
+                placeholder="0"
                 onChange={(e) => setAmount(Number(e.target.value))}
                 className="m-2 w-full rounded-2xl border-brown bg-[#0000005e] p-2 shadow-xl"
               />
               <p className="absolute right-8 top-4 opacity-50 ">Algo</p>
             </span>
-            <button
-              className="mx-auto mt-4 rounded-2xl bg-brown px-4 py-2 text-purple transition-transform hover:scale-105 md:w-1/2"
-              onClick={handleDonateClick}
-            >
-              Donate
-            </button>
+            {amount === 0 ? (
+              <button
+                disabled
+                className="pointer-events-none mx-auto mt-4 rounded-2xl bg-brown px-4 py-2 text-purple opacity-50 transition-transform md:w-1/2"
+              >
+                Donate
+              </button>
+            ) : (
+              <button
+                style={
+                  amount === 0 ? { pointerEvents: 'none', opacity: 0.5 } : {}
+                }
+                disabled={amount === 0}
+                className="mx-auto mt-4 rounded-2xl bg-brown px-4 py-2 text-purple transition-transform hover:scale-105 md:w-1/2"
+                onClick={handleDonateClick}
+              >
+                Donate
+              </button>
+            )}
           </>
         ) : (
           <>
