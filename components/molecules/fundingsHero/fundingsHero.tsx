@@ -42,13 +42,11 @@ const FundingsHero = () => {
   const [popUp, setPopUp] = useState<boolean>(false)
   const [filterStatus, setFilterStatus] = useState<number>(filter.all)
 
-  console.log(filterStatus)
-
   const connector = useContext(ConnectContext)
 
   const [state, setState] = useState<string>('Fetching from database')
 
-  const getPools = useCallback(() => {
+  const getPools = () => {
     console.log('Data fetched')
     getDocs(dbInstance)
       .then((data) => {
@@ -80,7 +78,7 @@ const FundingsHero = () => {
       .finally(() => {
         setState('There are no fundings')
       })
-  }, [dbInstance])
+  }
 
   useEffect(() => {
     getPools()

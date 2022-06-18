@@ -99,7 +99,7 @@ const Reclaim = ({
             </button>
           </>
         ) : (
-          <p className="opacity-80">You haven't contributed to this funding</p>
+          <p className="opacity-80">You have not contributed to this funding</p>
         )}
       </div>
     </PopUp>
