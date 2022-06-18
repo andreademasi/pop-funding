@@ -152,7 +152,7 @@ const Pool = ({
                   <>
                     <b>
                       <p className="m-2 rounded-2xl border-2 border-red-500 p-2 text-red-500">
-                        The funding hasn't reached the goal
+                        The funding has not reached the goal
                         <br /> <br />
                         If you want, you can reclaim the money you put before
                         the close date
