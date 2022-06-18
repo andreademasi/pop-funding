@@ -325,7 +325,7 @@ export const isOptedIn = async (
 ) => {
   const accountInfo = (await indexer.lookupAccountByID(address).do())
     .account as IndexerResponse
-  return accountInfo['apps-local-state'].find((app) => app.id === id) ?? false
+  return accountInfo['apps-local-state']?.find((app) => app.id === id) ?? false
 }
 
 // helper function to compile program source
