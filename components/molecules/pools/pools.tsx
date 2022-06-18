@@ -1,5 +1,5 @@
 import { ItemPool } from '../fundingsHero/fundingsHero'
-import Pool from '../../atoms/pool/pool'
+import Pool from '../pool/pool'
 import React from 'react'
 
 interface PoolsProps {
@@ -11,7 +11,7 @@ interface PoolsProps {
 
 const Pools = ({ poolsArray, type, showPopUp, getPools }: PoolsProps) => {
   return (
-    <div className="mx-4 flex flex-col justify-center align-middle">
+    <div className="mx-4 flex w-[90%] flex-col justify-center align-middle">
       <div className="flex w-full flex-row flex-wrap justify-center align-middle">
         {poolsArray.length > 0 ? (
           poolsArray
@@ -34,6 +34,8 @@ const Pools = ({ poolsArray, type, showPopUp, getPools }: PoolsProps) => {
                   firestoreId={item.firestoreId}
                   showPopUp={showPopUp}
                   getPools={getPools}
+                  creator={item.creator}
+                  claimed={item.claimed}
                 />
               )
             })

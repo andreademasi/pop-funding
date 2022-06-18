@@ -27,6 +27,7 @@ const Contribute = ({
   const [optedIn, setOptedIn] = useState<boolean>(false)
   const [amount, setAmount] = useState<number>(0)
   const [loading, setLoading] = useState<boolean>(false)
+  const [error, setError] = useState<string>('')
 
   const sender = connector.accounts[0]
 
@@ -52,11 +53,15 @@ const Contribute = ({
 
   const handleDonateClick = () => {
     setLoading(true)
-    donate(appId, appAddress, connector, amount).then(() => {
-      onTransactionSuccess(amount)
-      close()
-      setLoading(false)
-    })
+    donate(appId, appAddress, connector, amount)
+      .then(() => {
+        onTransactionSuccess(amount)
+        close()
+        setLoading(false)
+      })
+      .catch((error) => {
+        setError(error.message)
+      })
   }
 
   return (
@@ -92,6 +97,7 @@ const Contribute = ({
               <Loader stroke="purple" />
             </button>
             <p className="mt-4">Confirm on your wallet</p>
+            <p>{error}</p>
           </>
         ) : optedIn ? (
           <>

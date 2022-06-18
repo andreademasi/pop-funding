@@ -31,6 +31,7 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
     appAddress: string
   ) => {
     addDoc(dbInstance, {
+      creator: connector.accounts[0],
       title: title,
       description: description,
       dateStart: Date.parse(startDate.toString()),
@@ -40,6 +41,7 @@ const CreatePool = ({ dbInstance, getPools, setCreate }: CreatePoolProps) => {
       current: 0,
       appId: appId,
       appAddress: appAddress,
+      claimed: false,
     }).then((response) => {
       if (response) {
         setTitle('')

@@ -8,6 +8,8 @@ import PopUp from '../popUp/popUp'
 import { database } from '../../../firebaseConfig'
 
 export interface ItemPool {
+  creator: string
+  claimed: boolean
   appAddress: string
   appId: number
   title: string
@@ -20,15 +22,27 @@ export interface ItemPool {
   firestoreId: string
 }
 
+const enum filter {
+  all = 0,
+  active = 1,
+  ended = 2,
+  closed = 3,
+  future = 4,
+}
+
 const FundingsHero = () => {
   const [create, setCreate] = useState<boolean>(false)
   const dbInstance = collection(database, 'active-pools')
   const [poolsArray, setPoolsArray] = useState<Array<ItemPool>>([])
-  const [pastArray, setPastArray] = useState<Array<ItemPool>>([])
+  const [endedArray, setEndedArray] = useState<Array<ItemPool>>([])
+  const [closedArray, setClosedArray] = useState<Array<ItemPool>>([])
   const [futureArray, setFutureArray] = useState<Array<ItemPool>>([])
   const [activeArray, setActiveArray] = useState<Array<ItemPool>>([])
   const [result, setResult] = useState<boolean>(true)
   const [popUp, setPopUp] = useState<boolean>(false)
+  const [filterStatus, setFilterStatus] = useState<number>(filter.all)
+
+  console.log(filterStatus)
 
   const connector = useContext(ConnectContext)
 
@@ -42,6 +56,8 @@ const FundingsHero = () => {
           data.docs.map((item) => {
             const itemData = item.data()
             return {
+              claimed: itemData.claimed,
+              creator: itemData.creator,
               title: itemData.title,
               description: itemData.description,
               dateStart: itemData.dateStart,
@@ -72,15 +88,14 @@ const FundingsHero = () => {
 
   useEffect(() => {
     setActiveArray(
-      poolsArray.filter(
-        (item) =>
-          isAvaiable(item.dateStart, item.dateEnd) == 0 ||
-          isAvaiable(item.dateStart, item.dateClose) == 0
-      )
+      poolsArray.filter((item) => isAvaiable(item.dateStart, item.dateEnd) == 0)
     )
-    setPastArray(
+    setEndedArray(
+      poolsArray.filter((item) => isAvaiable(item.dateEnd, item.dateClose) == 0)
+    )
+    setClosedArray(
       poolsArray.filter(
-        (item) => isAvaiable(item.dateStart, item.dateEnd) == -1
+        (item) => isAvaiable(item.dateEnd, item.dateClose) == -1
       )
     )
     setFutureArray(
@@ -105,10 +120,21 @@ const FundingsHero = () => {
     else setPopUp(true)
   }
 
-  const classH2 = 'text-smallH2 md:text-bigH2 mt-8 ml-8'
+  const handleFilterClick = (status: number) => {
+    setFilterStatus(status)
+  }
+
+  const checkFilter = (status: number) => {
+    if (filterStatus == filter.all || filterStatus == status) return true
+    return false
+  }
+
+  const classH2 = 'text-smallH2 md:text-bigH2 mt-8 md:ml-16 md:mr-auto '
+  const classFilter =
+    'text-xs md:text-base rounded-lg transition-background transition-color duration-300 py-px md:py-2 px-2 md:px-4 cursor-pointer'
 
   return (
-    <div className="flex flex-col justify-center align-middle">
+    <div className="flex w-full flex-col justify-center align-middle">
       <div className="z-10 my-40 flex flex-row justify-center text-left align-middle">
         <h1 className=" mx-8 text-center font-mont text-smallH1 tracking-wider text-brown md:flex-row md:text-bigH1">
           Explore or{' '}
@@ -123,36 +149,116 @@ const FundingsHero = () => {
       </div>
       {result ? (
         poolsArray.length > 0 ? (
-          <div className=" mx-auto flex w-full flex-col">
-            <h2 className={classH2}>Active fundings</h2>
-            <Pools
-              poolsArray={activeArray}
-              type={'active'}
-              showPopUp={() => {
-                setPopUp(true)
-              }}
-              getPools={getPools}
-            />
-            <h2 className={classH2}>Future fundings</h2>
-            <Pools
-              poolsArray={futureArray}
-              type={'future'}
-              showPopUp={() => {
-                setPopUp(true)
-              }}
-              getPools={getPools}
-            />
-            <div className="opacity-70">
-              <h2 className={classH2}>Past fundings</h2>
-              <Pools
-                poolsArray={pastArray}
-                type={'past'}
-                showPopUp={() => {
-                  setPopUp(true)
-                }}
-                getPools={getPools}
-              />
+          <div className=" mx-auto flex w-full flex-col items-center justify-center">
+            <div className="my-4 mr-4 ml-4 flex flex-row gap-2 rounded-xl border-2 border-brown p-px md:ml-auto">
+              <p
+                style={
+                  filterStatus == filter.all
+                    ? { backgroundColor: '#dfb59c', color: '#3b2d60' }
+                    : {}
+                }
+                className={classFilter}
+                onClick={() => handleFilterClick(filter.all)}
+              >
+                All
+              </p>
+              <p
+                style={
+                  filterStatus == filter.active
+                    ? { backgroundColor: '#dfb59c', color: '#3b2d60' }
+                    : {}
+                }
+                className={classFilter}
+                onClick={() => handleFilterClick(filter.active)}
+              >
+                Active
+              </p>
+              <p
+                style={
+                  filterStatus == filter.ended
+                    ? { backgroundColor: '#dfb59c', color: '#3b2d60' }
+                    : {}
+                }
+                className={classFilter}
+                onClick={() => handleFilterClick(filter.ended)}
+              >
+                Ended
+              </p>
+              <p
+                style={
+                  filterStatus == filter.closed
+                    ? { backgroundColor: '#dfb59c', color: '#3b2d60' }
+                    : {}
+                }
+                className={classFilter}
+                onClick={() => handleFilterClick(filter.closed)}
+              >
+                Closed
+              </p>
+              <p
+                style={
+                  filterStatus == filter.future
+                    ? { backgroundColor: '#dfb59c', color: '#3b2d60' }
+                    : {}
+                }
+                className={classFilter}
+                onClick={() => handleFilterClick(filter.future)}
+              >
+                Future
+              </p>
             </div>
+            {checkFilter(filter.active) ? (
+              <>
+                <h2 className={classH2}>Active fundings</h2>
+                <Pools
+                  poolsArray={activeArray}
+                  type={'active'}
+                  showPopUp={() => {
+                    setPopUp(true)
+                  }}
+                  getPools={getPools}
+                />
+              </>
+            ) : null}
+            {checkFilter(filter.ended) ? (
+              <>
+                <h2 className={classH2}>Ended fundings</h2>
+                <Pools
+                  poolsArray={endedArray}
+                  type={'ended'}
+                  showPopUp={() => {
+                    setPopUp(true)
+                  }}
+                  getPools={getPools}
+                />
+              </>
+            ) : null}
+            {checkFilter(filter.closed) ? (
+              <>
+                <h2 className={classH2}>Closed fundings</h2>
+                <Pools
+                  poolsArray={closedArray}
+                  type={'closed'}
+                  showPopUp={() => {
+                    setPopUp(true)
+                  }}
+                  getPools={getPools}
+                />
+              </>
+            ) : null}
+            {checkFilter(filter.future) ? (
+              <>
+                <h2 className={classH2}>Future fundings</h2>
+                <Pools
+                  poolsArray={futureArray}
+                  type={'future'}
+                  showPopUp={() => {
+                    setPopUp(true)
+                  }}
+                  getPools={getPools}
+                />
+              </>
+            ) : null}
           </div>
         ) : (
           <p className="mx-auto mb-16 w-fit rounded-2xl border-2 border-brown px-8 py-4 text-center text-lg shadow-2xl">
