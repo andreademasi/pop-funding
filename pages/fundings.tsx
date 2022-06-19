@@ -8,7 +8,7 @@ const Fundings = () => {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-2 text-brown">
       <Head>
-        <title>PoP! Fundings</title>
+        <title>PoP! Funding</title>
       </Head>
       <NavBar />
       <FundingsHero />
