@@ -126,7 +126,7 @@ const FundingsHero = () => {
 
   const classH2 = 'text-smallH2 md:text-bigH2 mt-8 md:ml-16 md:mr-auto '
   const classFilter =
-    'text-xs md:text-base rounded-lg transition-background transition-color duration-300 py-px md:py-2 px-2 md:px-4 cursor-pointer'
+    'text-[0.85rem] md:text-base rounded-lg transition-background transition-color duration-300 py-px md:py-2 px-2 md:px-4 cursor-pointer'
 
   return (
     <div className="flex w-full flex-col justify-center align-middle">
