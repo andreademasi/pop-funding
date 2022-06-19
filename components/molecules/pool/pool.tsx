@@ -10,17 +10,12 @@ import { database } from '../../../firebaseConfig'
 import ButtonPool from '../../atoms/buttonPool/buttonPool'
 import Reclaim from '../../atoms/reclaim/reclaim'
 import Claim from '../../atoms/claim/claim'
+import { status } from '../fundingsHero/fundingsHero'
 
 interface PoolProps extends ItemPool {
   showPopUp: () => void
   getPools: () => void
-}
-
-enum status {
-  past = -1,
-  active = 0,
-  ended = 1,
-  closed = 2,
+  stat: number
 }
 
 enum trigger {
@@ -45,6 +40,7 @@ const Pool = ({
   appId,
   appAddress,
   firestoreId,
+  stat,
 }: PoolProps) => {
   const connector = useContext(ConnectContext)
   const [triggerStatus, setTriggerStatus] = useState<number>(trigger.none)
@@ -56,18 +52,6 @@ const Pool = ({
     fallbackInView: true,
     rootMargin: '-10% 0px -10% 0px',
   })
-
-  const checkStatus = () => {
-    const x = new Date()
-    const start = new Date(dateStart)
-    const end = new Date(dateEnd)
-    const close = new Date(dateClose)
-
-    if (x >= start && x < end) return status.active
-    else if (x >= end && x < close) return status.ended
-    else if (x >= close) return status.closed
-    else return status.past
-  }
 
   const dateConverter = (date: number) => {
     const x = new Date(date)
@@ -128,7 +112,14 @@ const Pool = ({
         </p>
         <div className="mx-auto mb-8 flex w-fit max-w-[90%] flex-row items-center justify-around rounded-lg border-2 border-transparentBrown">
           <p className="mx-6 ">
-            <strong>{claimed ? 'Collected' : 'Current'}</strong> {current}
+            <strong>
+              {claimed
+                ? 'Collected'
+                : stat >= status.ended && current < goal
+                ? 'Max'
+                : 'Donated'}
+            </strong>{' '}
+            {current}
           </p>
           <p className="mx-6 ">
             <strong>Goal:</strong> {goal}
@@ -139,7 +130,7 @@ const Pool = ({
           Info
         </button> */}
           {(() => {
-            switch (checkStatus()) {
+            switch (stat) {
               case status.active:
                 return (
                   <ButtonPool

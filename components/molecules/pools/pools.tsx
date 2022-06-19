@@ -1,15 +1,21 @@
 import { ItemPool } from '../fundingsHero/fundingsHero'
 import Pool from '../pool/pool'
 import React from 'react'
-
 interface PoolsProps {
   poolsArray: Array<ItemPool>
   type: string
+  status: number
   getPools: () => void
   showPopUp: (children?: React.ReactNode) => void
 }
 
-const Pools = ({ poolsArray, type, showPopUp, getPools }: PoolsProps) => {
+const Pools = ({
+  poolsArray,
+  type,
+  showPopUp,
+  getPools,
+  status,
+}: PoolsProps) => {
   return (
     <div className="mx-4 flex w-[90%] flex-col justify-center align-middle">
       <div className="flex w-full flex-row flex-wrap justify-center align-middle">
@@ -36,6 +42,7 @@ const Pools = ({ poolsArray, type, showPopUp, getPools }: PoolsProps) => {
                   getPools={getPools}
                   creator={item.creator}
                   claimed={item.claimed}
+                  stat={status}
                 />
               )
             })

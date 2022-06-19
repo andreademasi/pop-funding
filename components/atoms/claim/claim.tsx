@@ -70,7 +70,7 @@ const Claim = ({
         </h3>
         <div className="mx-auto my-8 flex w-fit max-w-[90%] flex-row items-center justify-around rounded-xl border-2 border-transparentBrown">
           <p className="mx-6 ">
-            <strong>Current:</strong> {current}
+            <strong>Max:</strong> {current}
           </p>
           <p className="mx-6 ">
             <strong>Goal:</strong> {goal}

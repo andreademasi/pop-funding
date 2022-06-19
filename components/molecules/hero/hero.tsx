@@ -7,7 +7,7 @@ import SecondSection from '../secondSection/secondSection'
 const Hero = () => {
   return (
     <>
-      <main className="flex w-full flex-1 flex-col items-center justify-center overflow-x-hidden px-2 text-center text-brown">
+      <main className="flex w-[100%] flex-1 flex-col items-center justify-center overflow-x-hidden px-2 text-center text-brown">
         <div className=" h-[100vh] w-full">
           <NavBar />
           <FirstSection />

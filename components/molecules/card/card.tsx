@@ -38,8 +38,12 @@ const Card = ({ title, description, shift = false }: CardProps) => {
         <h2 className="relative mx-8 mb-4 mt-8 text-smallH2 font-bold text-brown md:text-bigH2">
           <Highlight>{title}</Highlight>
         </h2>
-
-        <p className=" mt-4 mb-10 w-[80%] px-8">{description}</p>
+        <span className={styles.description}>
+          <p
+            className=" mt-4 mb-10 w-[80%] px-8"
+            dangerouslySetInnerHTML={{ __html: description }}
+          ></p>
+        </span>
       </div>
     </span>
   )
