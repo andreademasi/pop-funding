@@ -317,6 +317,14 @@ bz failed
 itxn_begin
 int pay
 itxn_field TypeEnum
+byte "Total"
+app_global_get
+int 0
+byte "MyAmountGiven"
+app_local_get
+<=
+bnz reclaim_remainder
+
 int 0
 byte "MyAmountGiven"
 app_local_get
@@ -325,17 +333,12 @@ txn Fee
 itxn_field Amount
 txn Sender
 itxn_field Receiver
+b finish_reclaim
 
-
-
-byte "Total"
-app_global_get
+reclaim_remainder:
 int 0
-byte "MyAmountGiven"
-app_local_get
-<=
-bz finish_reclaim
-global ZeroAddress
+itxn_field Amount
+txn Sender
 itxn_field CloseRemainderTo
 finish_reclaim:
 itxn_submit
