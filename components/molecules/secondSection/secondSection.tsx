@@ -5,17 +5,16 @@ const cards = [
   {
     title: 'What is PoP! ?',
     description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam non imperdiet felis. Praesent eget sapien porta, congue lacus efficitur, blandit nisi. In cursus tincidunt auctor. Vivamus interdum lacus et odio dignissim blandit. Mauris nec quam sit amet magna feugiat ullamcorper ut non tortor. ',
+      'PoP! is a crowfunding platform based on Algorand blockchain that allows you to create and manage your own crowdfunding campaigns. Everyone with a wallet can create a campaign and start collecting funds from people. You can also reclaim your donations if the funding does not reach the goal.',
   },
   {
     title: 'Who are we?',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam non imperdiet felis. Praesent eget sapien porta, congue lacus efficitur, blandit nisi. In cursus tincidunt auctor. Vivamus interdum lacus et odio dignissim blandit. Mauris nec quam sit amet magna feugiat ullamcorper ut non tortor. ',
+    description: `We are three students of the Polytechnic of Turin fascinated by the world of blockchains. 
+      We are Andrea De Masi, Enrico Milazzo and Michele Pulvirenti.`,
   },
   {
-    title: 'Smart Contract',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam non imperdiet felis. Praesent eget sapien porta, congue lacus efficitur, blandit nisi. In cursus tincidunt auctor. Vivamus interdum lacus et odio dignissim blandit. Mauris nec quam sit amet magna feugiat ullamcorper ut non tortor. ',
+    title: 'Why this project?',
+    description: `This is the Project Work proposed by Algorand to the attendees of MasterZ 2nd Edition`,
   },
 ]
 
