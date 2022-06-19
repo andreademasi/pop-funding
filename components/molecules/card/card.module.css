@@ -7,9 +7,15 @@
     .cardRight {
         align-self: flex-start;
         width: 50%;
+        text-align: left;
     }
     .cardLeft {
         align-self: flex-end;
         width: 50%;
+        text-align: right;
     }
+}
+
+.description a {
+    text-decoration: underline;
 }

@@ -30,6 +30,13 @@ const enum filter {
   future = 4,
 }
 
+export enum status {
+  future = -1,
+  active = 0,
+  ended = 1,
+  closed = 2,
+}
+
 const FundingsHero = () => {
   const [create, setCreate] = useState<boolean>(false)
   const dbInstance = collection(database, 'active-pools')
@@ -85,32 +92,22 @@ const FundingsHero = () => {
   }, [])
 
   useEffect(() => {
-    setActiveArray(
-      poolsArray.filter((item) => isAvaiable(item.dateStart, item.dateEnd) == 0)
-    )
-    setEndedArray(
-      poolsArray.filter((item) => isAvaiable(item.dateEnd, item.dateClose) == 0)
-    )
-    setClosedArray(
-      poolsArray.filter(
-        (item) => isAvaiable(item.dateEnd, item.dateClose) == -1
-      )
-    )
-    setFutureArray(
-      poolsArray.filter((item) => isAvaiable(item.dateStart, item.dateEnd) == 1)
-    )
+    setActiveArray(poolsArray.filter((item) => check(item) == status.active))
+    setEndedArray(poolsArray.filter((item) => check(item) == status.ended))
+    setClosedArray(poolsArray.filter((item) => check(item) == status.closed))
+    setFutureArray(poolsArray.filter((item) => check(item) == status.future))
   }, [poolsArray])
 
-  const isAvaiable = (dateStart: number, dateEnd: number) => {
+  const check = (pool: ItemPool) => {
     const x = new Date()
-    const start = new Date(dateStart)
-    const end = new Date(dateEnd)
-    if (x >= start && x < end) {
-      return 0
-    }
-    if (x < start && x < end) return 1
-    if (x >= end && x > start) return -1
-    return null
+    const start = new Date(pool.dateStart)
+    const end = new Date(pool.dateEnd)
+    const close = new Date(pool.dateClose)
+
+    if (x >= start && x < end) return status.active
+    else if (x >= end && x < close) return status.ended
+    else if (x >= close) return status.closed
+    else return status.future
   }
 
   const handleCreateClick = () => {
@@ -215,6 +212,7 @@ const FundingsHero = () => {
                     setPopUp(true)
                   }}
                   getPools={getPools}
+                  status={status.active}
                 />
               </>
             ) : null}
@@ -228,6 +226,7 @@ const FundingsHero = () => {
                     setPopUp(true)
                   }}
                   getPools={getPools}
+                  status={status.ended}
                 />
               </>
             ) : null}
@@ -241,6 +240,7 @@ const FundingsHero = () => {
                     setPopUp(true)
                   }}
                   getPools={getPools}
+                  status={status.closed}
                 />
               </>
             ) : null}
@@ -254,6 +254,7 @@ const FundingsHero = () => {
                     setPopUp(true)
                   }}
                   getPools={getPools}
+                  status={status.future}
                 />
               </>
             ) : null}

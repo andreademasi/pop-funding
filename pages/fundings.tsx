@@ -2,7 +2,7 @@ import Head from 'next/head'
 import React from 'react'
 import Footer from '../components/molecules/footer/footer'
 import FundingsHero from '../components/molecules/fundingsHero/fundingsHero'
-import NavBar from '../helpers/navBar'
+import NavBar from '../components/molecules/navBar/navBar'
 
 const Fundings = () => {
   return (
