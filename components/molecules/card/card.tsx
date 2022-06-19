@@ -40,7 +40,7 @@ const Card = ({ title, description, shift = false }: CardProps) => {
         </h2>
         <span className={styles.description}>
           <p
-            className=" mt-4 mb-10 w-[80%] px-8"
+            className=" mt-4 mb-10 px-8"
             dangerouslySetInnerHTML={{ __html: description }}
           ></p>
         </span>
