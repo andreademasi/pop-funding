@@ -128,7 +128,7 @@ const Pool = ({
         </p>
         <div className="mx-auto mb-8 flex w-fit max-w-[90%] flex-row items-center justify-around rounded-lg border-2 border-transparentBrown">
           <p className="mx-6 ">
-            <strong>Current:</strong> {current}
+            <strong>{claimed ? 'Collected' : 'Current'}</strong> {current}
           </p>
           <p className="mx-6 ">
             <strong>Goal:</strong> {goal}
@@ -173,10 +173,18 @@ const Pool = ({
 
               case status.closed:
                 return (
-                  <ButtonPool
-                    text="Claim"
-                    handleClick={() => handleTriggerClick(trigger.claim)}
-                  />
+                  <>
+                    {claimed ? (
+                      <p className="m-2 rounded-2xl border-2 border-green-500 p-2 text-green-500">
+                        The creator has claimed the donations!
+                      </p>
+                    ) : (
+                      <ButtonPool
+                        text="Claim"
+                        handleClick={() => handleTriggerClick(trigger.claim)}
+                      />
+                    )}
+                  </>
                 )
               default:
                 return <ButtonPool text="Stay tuned" handleClick={() => {}} />
