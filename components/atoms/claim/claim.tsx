@@ -86,7 +86,7 @@ const Claim = ({
         ) : creatorCheck ? (
           <>
             {goalCheck ? (
-              <p className="m-2 rounded-2xl border-2 border-green-500 p-2 text-green-500">
+              <p className="m-2 rounded-2xl border-2 border-green-500 p-2 text-center text-green-500">
                 Congratulations!
                 <br />
                 The funding has reached the goal!
@@ -94,7 +94,7 @@ const Claim = ({
                 Click the button below to claim the donations
               </p>
             ) : (
-              <p className="m-2">
+              <p className="m-2 text-center">
                 Unluckily the funding has not reached the goal
                 <br />
                 Click the button below to claim the donations (if there are any)
@@ -109,7 +109,9 @@ const Claim = ({
             </button>
           </>
         ) : (
-          <p className="opacity-80">You are not the creator of this funding</p>
+          <p className="text-center opacity-80">
+            You are not the creator of this funding
+          </p>
         )}
       </div>
     </PopUp>
