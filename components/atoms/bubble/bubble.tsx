@@ -1,6 +1,6 @@
-import Image from 'next/image'
+// import Image from 'next/image'
 import React, { useState } from 'react'
-import chain from '../../../public/chain.svg'
+// import chain from '../../../public/chain.svg'
 
 interface BubbleProps {
   dimensions?: number
@@ -30,16 +30,19 @@ const Bubble = ({ dimensions = 200, right = 10 }: BubbleProps) => {
 
   return (
     <div
-      style={{ opacity: clicked ? 0 : 1 }}
-      className="transition-opacity duration-100"
+      style={{
+        opacity: clicked ? 0 : 1,
+        right: rightPc,
+        animationDuration: durationS,
+        zIndex: clicked ? -10 : 0,
+      }}
+      className="absolute top-0 flex animate-[float_ease-in-out_infinite] align-middle transition-opacity duration-100"
     >
       <div
         onClick={(e) => handleClick(e)}
         style={{
-          right: rightPc,
           width: dimPx,
           height: dimPx,
-          animationDuration: durationS,
           boxShadow: `inset 0 0 ${ratio * 20}px #fff, inset ${ratio * 10}px 0 ${
             ratio * 46
           }px #e78dd2e5,inset ${ratio * 88}px 0px ${
@@ -51,17 +54,16 @@ const Bubble = ({ dimensions = 200, right = 10 }: BubbleProps) => {
           }px #e78dd2e5, 0 0 ${ratio * 90}px #e78dd2e5`,
           transform: clicked ? 'scale(2)' : 'scale(1)',
           opacity: clicked ? 0 : 1,
-          zIndex: clicked ? -1 : 0,
         }}
-        className={` align-center absolute top-0 flex animate-[float_ease-in-out_infinite] justify-center rounded-full bg-radial shadow-radial transition-transform duration-100`}
+        className={` flex justify-center rounded-full bg-radial  shadow-radial transition-[opacity_transform] duration-100`}
       >
-        <Image
+        {/* <Image
           src={chain}
           width={dimensions * 0.8}
           height={dimensions * 0.8}
           className={'-z-10 opacity-10'}
           alt="chain"
-        />
+        /> */}
       </div>
     </div>
   )

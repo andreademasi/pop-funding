@@ -1,7 +1,7 @@
 import React from 'react'
 import { useInView } from 'react-intersection-observer'
 import Highlight from '../../atoms/highlight/highlight'
-import styles from './card.module.scss'
+import styles from './card.module.css'
 
 interface CardProps {
   title: string
@@ -17,9 +17,6 @@ const Card = ({ title, description, shift = false }: CardProps) => {
   })
 
   const properties = {
-    marginLeft: shift ? 'auto' : '1.5rem',
-    marginRight: shift ? '1.5rem' : 'auto',
-    textAlign: shift ? 'right' : 'left',
     opacity: inView ? 1 : 0,
     transform: inView
       ? 'translateX(0)'
@@ -30,40 +27,26 @@ const Card = ({ title, description, shift = false }: CardProps) => {
   } as React.CSSProperties
 
   return (
-    <div
-      ref={ref}
-      style={properties}
-      className={
-        'mx-6 mb-[10%] flex h-fit w-[90%] flex-col items-center justify-center rounded-b-2xl shadow-[0px_10px_11px] shadow-transparentBrown md:w-[50%] md:self-center '
-      }
-    >
-      <h2 className="relative my-4 mx-8 text-smallH2 font-bold text-brown md:text-bigH2">
-        <Highlight>{title}</Highlight>
-      </h2>
-
-      <p className=" mt-4 mb-10 w-[80%] px-8">{description}</p>
-    </div>
+    <span className={shift ? styles.cardLeft : styles.cardRight}>
+      <div
+        ref={ref}
+        style={properties}
+        className={
+          ' mx-6 mb-[10%]  flex h-fit flex-col items-center justify-center rounded-2xl bg-opacity-10 bg-gradient-to-tl from-transparentPurple via-transparentDarkBlue to-transparentPink align-middle shadow-lg md:self-center '
+        }
+      >
+        <h2 className="relative mx-8 mb-4 mt-8 text-smallH2 font-bold text-brown md:text-bigH2">
+          <Highlight>{title}</Highlight>
+        </h2>
+        <span className={styles.description}>
+          <p
+            className=" mt-4 mb-10 px-8"
+            dangerouslySetInnerHTML={{ __html: description }}
+          ></p>
+        </span>
+      </div>
+    </span>
   )
 }
 
 export default Card
-/*
-.sketch:after{
-  content:"";
-  z-index:-1;
-  left:-0.5em;
-  top:0.1em;
-  padding:0.1em 0.25em;
-  border-width:2px;
-  border-style:solid;
-  border-color:#ef8c22;
-  border-left-color:transparent;
-  border-top-color:transparent;
-  position:absolute;
-  width:100%;
-  height:1em;
-  transform:rotate(-1deg);
-  opacity:0.7;
-  border-radius:50%;
-}
-*/
