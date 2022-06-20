@@ -6,6 +6,7 @@ import CreatePool from '../../atoms/createPool/createPool'
 import Pools from '../pools/pools'
 import PopUp from '../popUp/popUp'
 import { database } from '../../../firebaseConfig'
+import Loader from '../../atoms/loader/loader'
 
 export interface ItemPool {
   creator: string
@@ -48,6 +49,7 @@ const FundingsHero = () => {
   const [result, setResult] = useState<boolean>(true)
   const [popUp, setPopUp] = useState<boolean>(false)
   const [filterStatus, setFilterStatus] = useState<number>(filter.all)
+  const [loading, setLoading] = useState<boolean>(false)
 
   const connector = useContext(ConnectContext)
 
@@ -55,6 +57,7 @@ const FundingsHero = () => {
 
   const getPools = () => {
     console.log('Data fetched')
+    setLoading(true)
     getDocs(dbInstance)
       .then((data) => {
         setPoolsArray(
@@ -84,6 +87,7 @@ const FundingsHero = () => {
       })
       .finally(() => {
         setState('There are no fundings')
+        setLoading(false)
       })
   }
 
@@ -142,7 +146,11 @@ const FundingsHero = () => {
           fundings
         </h1>
       </div>
-      {result ? (
+      {loading ? (
+        <div className="flex w-full items-center justify-center">
+          <Loader width={70} height={70} />
+        </div>
+      ) : result ? (
         poolsArray.length > 0 ? (
           <div className=" mx-auto flex w-full flex-col items-center justify-center">
             <div className="my-4 mr-4 ml-4 flex flex-row gap-2 rounded-xl border-2 border-brown p-px md:ml-auto">
