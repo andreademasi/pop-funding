@@ -2,15 +2,17 @@ import React from 'react'
 
 interface LoaderProps {
   stroke?: string
+  width?: number
+  height?: number
 }
 
-const Loader = ({ stroke = 'brown' }: LoaderProps) => {
+const Loader = ({ stroke = 'brown', width = 25, height = 25 }: LoaderProps) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 100 100"
-      width={25}
-      height={25}
+      width={width}
+      height={height}
       preserveAspectRatio="xMidYMid"
     >
       <circle
