@@ -8,7 +8,7 @@ const masterZ = `<a href="https://www.masterzblockchain.com/" rel="noopener nore
 const cards = [
   {
     title: 'What is PoP! ?',
-    description: `PoP! is a crowfunding platform based on ${algorand} blockchain that allows you to create and manage your own crowdfunding campaigns.<br/><br/>
+    description: `PoP! is a crowdfunding platform based on ${algorand} blockchain that allows you to create and manage your own crowdfunding campaigns.<br/><br/>
        Everyone with a wallet can create a campaign and start collecting funds from people.<br/><br/>
         You can also reclaim your donations if the funding does not reach the goal.`,
   },
