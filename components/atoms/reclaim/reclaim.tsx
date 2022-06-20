@@ -64,7 +64,7 @@ const Reclaim = ({
         </svg>
       </div>
       <div className="mt-4 flex flex-col items-center justify-center">
-        <h3 className="text-base md:text-xl">
+        <h3 className="text-center text-base md:text-xl">
           Do you want to reclaim your donation to <br />
           <strong>{title}</strong> ?
         </h3>
@@ -85,7 +85,7 @@ const Reclaim = ({
           </>
         ) : optedIn ? (
           <>
-            <p className="m-2">
+            <p className="m-2 text-center">
               Unluckily the funding you donated to has not reached the goal
               <br />
               If you want, you can reclaim your donations by clicking the button
@@ -99,7 +99,9 @@ const Reclaim = ({
             </button>
           </>
         ) : (
-          <p className="opacity-80">You have not contributed to this funding</p>
+          <p className="text-center opacity-80">
+            You have not contributed to this funding
+          </p>
         )}
       </div>
     </PopUp>
